@@ -1,0 +1,20 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat">
+        <item name="actionBarStyle">@style/ActionBarTheme</item>
+        <!-- Customize your theme here.
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>-->
+    </style>
+
+    <style name="ActionBarTheme" parent="@style/Base.Widget.AppCompat.Light.ActionBar.Solid">
+        <item name="background">@color/holoBlueDark</item>
+    </style>
+
+    <style name="TabsTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="colorAccent">@color/holoBlueLit</item>
+    </style>
+
+</resources>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="66dp"
+            android:background="@color/holoBlueDark"
+            android:id="@+id/notifrltb"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_toLeftOf="@+id/notif_rl_plus"
+                android:baselineAligned="false"
+                android:layout_alignParentBottom="true">
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".25">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Name"
+                        android:layout_centerVertical="true"
+                        android:layout_centerHorizontal="true"
+                        android:textColor="#ffffff" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".55">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Trigger"
+                        android:id="@+id/textView3"
+                        android:layout_centerVertical="true"
+                        android:layout_centerHorizontal="true"
+                        android:textColor="#ffffff" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".2">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Alarm"
+                        android:id="@+id/textView4"
+                        android:layout_centerVertical="true"
+                        android:layout_centerHorizontal="true"
+                        android:textColor="#ffffff"
+                        android:phoneNumber="false" />
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_alignParentRight="true"
+                android:id="@+id/notif_rl_plus"
+                android:clickable="true"
+                android:layout_marginRight="1dp"
+                android:layout_centerVertical="true">
+
+                <ImageButton
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/add_notif_ibtn"
+                    android:layout_margin="8dp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/plus"
+                    android:background="?android:selectableItemBackground"
+                    android:cropToPadding="false"
+                    android:scaleType="fitCenter"
+                    android:longClickable="false"
+                    android:clickable="true"
+                    android:layout_alignParentRight="false"
+                    android:layout_alignParentBottom="false" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:layout_alignParentTop="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Notifications"
+                    android:id="@+id/textView11"
+                    android:layout_centerInParent="true" />
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:background="@color/pureBlack">
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/notif_tl"></TableLayout>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

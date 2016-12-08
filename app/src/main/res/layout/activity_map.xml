@@ -1,0 +1,107 @@
+<RelativeLayout
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:map="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.example.tars.aquamanager.Map" />
+
+    <RelativeLayout
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/transparent_bkgd_dark"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp">
+
+        <RelativeLayout
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="@drawable/transparent_bkgd"
+            android:layout_centerInParent="true"
+            android:id="@+id/add_dev_rl">
+
+            <ImageButton
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:id="@+id/add_device_ibtn"
+                android:layout_alignParentTop="false"
+                android:layout_alignParentRight="false"
+                android:src="@drawable/plus_black"
+                android:background="?android:selectableItemBackground"
+                android:cropToPadding="false"
+                android:scaleType="fitCenter"
+                android:longClickable="false"
+                android:clickable="true"
+                android:layout_centerInParent="true" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="40dp"
+        android:layout_height="81dp"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/transparent_bkgd_dark"
+        android:layout_marginRight="8dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="8dp">
+
+        <RelativeLayout
+            android:layout_width="37dp"
+            android:layout_height="37dp"
+            android:background="@drawable/transparent_bkgd"
+            android:layout_centerInParent="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="2dp"
+            android:id="@+id/zoomin_rl">
+
+            <ImageButton
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:id="@+id/zoomin"
+                android:layout_alignParentTop="false"
+                android:layout_alignParentRight="false"
+                android:src="@drawable/zoom_in"
+                android:background="?android:selectableItemBackground"
+                android:cropToPadding="false"
+                android:scaleType="fitCenter"
+                android:longClickable="false"
+                android:clickable="true"
+                android:layout_centerInParent="true" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="37dp"
+            android:layout_height="37dp"
+            android:background="@drawable/transparent_bkgd"
+            android:layout_centerInParent="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="2dp"
+            android:id="@+id/zoomout_rl">
+
+            <ImageButton
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:id="@+id/zoomout"
+                android:layout_alignParentTop="false"
+                android:layout_alignParentRight="false"
+                android:src="@drawable/zoom_out"
+                android:background="?android:selectableItemBackground"
+                android:cropToPadding="false"
+                android:scaleType="fitCenter"
+                android:longClickable="false"
+                android:clickable="true"
+                android:layout_centerInParent="true" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

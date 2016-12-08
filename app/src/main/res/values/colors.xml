@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="pureBlack">#000000</color>
+    <color name="colorAqua">#57a6e2</color>
+    <color name="holoBlue">#09699a</color>
+    <color name="holoBlueLit">#25a4e4</color>
+    <color name="holoBlueLitTransparent">#7725a4e4</color>
+    <color name="holoBlueDark">#0b3144</color>
+    <color name="holoBlueMidnight">#051822</color>
+    <color name="noDataGray">#8c8c8c</color>
+    <color name="recentUpdateGreen">#4DBE3B</color>
+    <color name="semiRecentUpdateOrange">#FF8119</color>
+    <color name="noRecentUpdateRed">#E33F3F</color>
+    <color name="whiteTransparent">#EEFFFFFF</color>
+    <color name="transparent">#FFFFFFFF</color>
+    <color name="blackTransparent">#55000000</color>
+</resources>
