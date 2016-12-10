@@ -43,6 +43,6 @@ public class HomeGeofences extends Fragment {
     public static void refresh_geofence_table(Context context, View view) {
         TableLayout geo_table = (TableLayout) view.findViewById(R.id.geo_tl);
         geo_table.removeAllViews();
-        if (!AquaUtil.populateGeoRows(context, geo_table, "Map")) Log.d("og", "og");//Toast.makeText(context, "Parse Error", Toast.LENGTH_SHORT).show();
+        if (!AquaUtil.populateGeoRows(context, geo_table, "MainMap")) Log.d("og", "og");//Toast.makeText(context, "Parse Error", Toast.LENGTH_SHORT).show();
     }
 }

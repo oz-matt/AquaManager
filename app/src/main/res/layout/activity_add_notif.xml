@@ -25,9 +25,10 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Device:"
-            android:id="@+id/textView"
+            android:id="@+id/device_tv"
             android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true" />
+            android:layout_centerVertical="true"
+            android:textSize="20sp" />
 
         <Button
             android:layout_width="wrap_content"
@@ -47,9 +48,10 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Trigger:"
-            android:id="@+id/textView1"
+            android:id="@+id/trigger_tv"
             android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true" />
+            android:layout_centerVertical="true"
+            android:textSize="20sp" />
 
         <Button
             android:layout_width="wrap_content"
@@ -69,9 +71,10 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Alarm:"
-            android:id="@+id/textView2"
+            android:id="@+id/alarm_tv"
             android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true" />
+            android:layout_centerVertical="true"
+            android:textSize="20sp" />
 
         <Button
             android:layout_width="wrap_content"
@@ -95,7 +98,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:id="@+id/textView12"
+            android:id="@+id/notif_sen"
             android:layout_centerInParent="true"
             android:text="@string/notif_start" />
     </RelativeLayout>

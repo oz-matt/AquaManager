@@ -50,7 +50,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Map extends FragmentActivity implements OnMapReadyCallback {
+public class MainMap extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     ArrayList<String> devs_to_populate = new ArrayList<>();
@@ -487,7 +487,7 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
         client.connect();
         Action viewAction = Action.newAction(
                 Action.TYPE_VIEW, // TODO: choose an action type.
-                "Map Page", // TODO: Define a title for the content shown.
+                "MainMap Page", // TODO: Define a title for the content shown.
                 // TODO: If you have web page content that matches this app activity's content,
                 // make sure this auto-generated web page URL is correct.
                 // Otherwise, set the URL to null.
@@ -506,7 +506,7 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         Action viewAction = Action.newAction(
                 Action.TYPE_VIEW, // TODO: choose an action type.
-                "Map Page", // TODO: Define a title for the content shown.
+                "MainMap Page", // TODO: Define a title for the content shown.
                 // TODO: If you have web page content that matches this app activity's content,
                 // make sure this auto-generated web page URL is correct.
                 // Otherwise, set the URL to null.

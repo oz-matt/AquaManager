@@ -144,7 +144,7 @@ public class Settings extends Activity {
         tzrl.addView(tzll_info);
 
         TextView mapTypeTitle = new TextView(this);
-        mapTypeTitle.setText("Map Display");
+        mapTypeTitle.setText("MainMap Display");
         mapTypeTitle.setPadding(8*den, 12*den, 8*den, 8*den);
         //mapTypeTitle.setId(113);
         mapTypeTitle.setTextColor(Color.rgb(240,240,240));
@@ -203,7 +203,7 @@ public class Settings extends Activity {
         nmrl.addView(numMarkers);
 
         TextView showGeos_tv = new TextView(this);
-        showGeos_tv.setText("Show Geofences On Map");
+        showGeos_tv.setText("Show Geofences On MainMap");
         showGeos_tv.setPadding(8*den, 8*den, 8*den, 8*den);
         //tv_numMarkers.setId(131);
         showGeos_tv.setTextSize(20);

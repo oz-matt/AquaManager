@@ -44,7 +44,7 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Dialog" />
         <activity
-            android:name=".Map"
+            android:name=".MainMap"
             android:label="Hi" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -85,12 +85,21 @@
         <activity
             android:name=".AddNotif"
             android:label="@string/title_activity_add_notif"
-            android:noHistory="true"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Dialog" />
         <activity
             android:name=".Settings"
-            android:windowSoftInputMode="stateHidden|adjustResize"/>
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name=".AddNotifSelectDevice"
+            android:label="Select Device"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Dialog" />
+        <activity
+            android:name=".AddNotifSelectTrigger"
+            android:label="Select Trigger"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Dialog"/>
     </application>
 
 </manifest>

@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.tars.aquamanager.AddNotifSelectTrigger">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/linearLayout">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/device_table">
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/checkBox_1"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="Low Battery"
+                        android:id="@+id/textView_1"
+                        android:layout_centerVertical="true"
+                        android:padding="8dp"
+                        android:textSize="16sp"
+                        android:layout_alignParentLeft="true" />
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/checkBox_2"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="Enters Geofence"
+                        android:id="@+id/textView_2"
+                        android:layout_centerVertical="true"
+                        android:padding="8dp"
+                        android:textSize="16sp"
+                        android:layout_alignParentLeft="true" />
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/checkBox_3"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="Exits Geofence"
+                        android:id="@+id/textView_3"
+                        android:layout_centerVertical="true"
+                        android:padding="8dp"
+                        android:textSize="16sp"
+                        android:layout_alignParentLeft="true" />
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/checkBox_4"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="Uploads Data"
+                        android:id="@+id/textView_4"
+                        android:layout_centerVertical="true"
+                        android:padding="8dp"
+                        android:textSize="16sp"
+                        android:layout_alignParentLeft="true" />
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/checkBox_5"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="Sees Mac Address"
+                        android:id="@+id/textView_5"
+                        android:layout_centerVertical="true"
+                        android:padding="8dp"
+                        android:textSize="16sp"
+                        android:layout_alignParentLeft="true" />
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/checkBox_6"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="Starts Moving"
+                        android:id="@+id/textView_6"
+                        android:layout_centerVertical="true"
+                        android:padding="8dp"
+                        android:textSize="16sp"
+                        android:layout_alignParentLeft="true" />
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/checkBox_7"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="Stops Moving"
+                        android:id="@+id/textView_7"
+                        android:layout_centerVertical="true"
+                        android:padding="8dp"
+                        android:textSize="16sp"
+                        android:layout_alignParentLeft="true" />
+                </RelativeLayout>
+            </TableLayout>
+        </ScrollView>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/ok_btn_trig"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/ok"
+                android:layout_weight=".5"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/cancel_btn_trig"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/cancel"
+                android:layout_weight=".5"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

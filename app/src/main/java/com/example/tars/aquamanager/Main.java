@@ -3,21 +3,17 @@ package com.example.tars.aquamanager;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import org.json.JSONObject;
-
-//import java.util.Map;
+//import java.util.MainMap;
 
 public class Main extends AppCompatActivity {
 
@@ -86,11 +82,11 @@ public class Main extends AppCompatActivity {
                 startActivity(open_settings);
                 break;
             case R.id.item_map:
-                Toast.makeText(getBaseContext(), "Map", Toast.LENGTH_SHORT).show();
-                Intent intent=new Intent(Main.this, Map.class);
+                Toast.makeText(getBaseContext(), "MainMap", Toast.LENGTH_SHORT).show();
+                Intent intent=new Intent(Main.this, MainMap.class);
                 intent.putExtra("populate_extra", "all");
                 startActivity(intent);
-                //startActivity(new Intent(this, Map.class));
+                //startActivity(new Intent(this, MainMap.class));
                 break;
         }
         return true;
@@ -126,7 +122,7 @@ public class Main extends AppCompatActivity {
     }
 
     public void onListItemClick(ListView parent, View v, int position, long id){
-        Intent intent = new Intent(Main.this,Map.class);
+        Intent intent = new Intent(Main.this,MainMap.class);
         Bundle bundle = new Bundle();
         //bundle.putString("string", strings[position]);
         intent.putExtras(bundle);

@@ -11,6 +11,7 @@
     <string name="passcode_hint">Passcode</string>
     <string name="submit">Submit</string>
     <string name="confirm">Confirm</string>
+    <string name="ok">Ok</string>
     <string name="cancel">Cancel</string>
     <string name="error_invalid_passcode">Authentication Failed</string>
     <string name="error_field_required">Field Required</string>
@@ -88,4 +89,6 @@
     <string name="title_activity_geofence_map">GeofenceMap</string>
     <string name="title_activity_new_geo_info">NewGeoInfo</string>
     <string name="title_activity_get_location_only">GetLocationOnly</string>
+    <string name="title_activity_add_notif_select_device">AddNotifSelectDevice</string>
+    <string name="title_activity_add_notif_select_trigger">AddNotifSelectTrigger</string>
 </resources>

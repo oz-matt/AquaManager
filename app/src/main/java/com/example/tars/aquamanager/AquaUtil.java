@@ -1,18 +1,11 @@
 package com.example.tars.aquamanager;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.StateListDrawable;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -37,16 +30,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
 /**
@@ -394,8 +382,8 @@ public class AquaUtil {
                                 newName.setBackgroundColor(final_row_color);
                                 icon_rl.setBackgroundColor(final_row_color);
                                 if (clickFunction.equalsIgnoreCase("None")) Toast.makeText(context, "Eye Of Horus", Toast.LENGTH_SHORT).show();
-                                if (clickFunction.equalsIgnoreCase("Map")) {
-                                    Intent intent=new Intent(context, Map.class);
+                                if (clickFunction.equalsIgnoreCase("MainMap")) {
+                                    Intent intent=new Intent(context, MainMap.class);
                                     intent.putExtra("populate_extra", "!dev_" + name);
                                     context.startActivity(intent);
                                 }
@@ -834,8 +822,8 @@ public class AquaUtil {
                                 newName.setBackgroundColor(ContextCompat.getColor(context, R.color.recentUpdateGreen));
                                 icon_rl.setBackgroundColor(ContextCompat.getColor(context, R.color.recentUpdateGreen));
                                 if (clickFunction.equalsIgnoreCase("None")) Toast.makeText(context, "Eye Of Horus", Toast.LENGTH_SHORT).show();
-                                if (clickFunction.equalsIgnoreCase("Map")) {
-                                    Intent intent=new Intent(context, Map.class);
+                                if (clickFunction.equalsIgnoreCase("MainMap")) {
+                                    Intent intent=new Intent(context, MainMap.class);
                                     intent.putExtra("populate_single_geo", geofence_name);
                                     context.startActivity(intent);
                                 }

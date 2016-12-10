@@ -42,6 +42,6 @@ public class HomeDevices extends Fragment {
     public static void refresh_device_table(Context context, View view) {
         TableLayout device_table = (TableLayout) view.findViewById(R.id.dev_tl);
         device_table.removeAllViews();
-        if (!AquaUtil.populateDeviceRows(context, device_table, "Map")) Toast.makeText(context, "Parse Error", Toast.LENGTH_SHORT).show();
+        if (!AquaUtil.populateDeviceRows(context, device_table, "MainMap")) Toast.makeText(context, "Parse Error", Toast.LENGTH_SHORT).show();
     }
 }
