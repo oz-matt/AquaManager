@@ -84,25 +84,29 @@ public class GetLocationOnly extends AsyncTask<String, JSONObject, String> {
 
         mDialog.dismiss();
 
-        if (result.equalsIgnoreCase("error")) {
-            Toast.makeText(mContext, "Error Getting Location", Toast.LENGTH_SHORT).show();
-        } else {
-            SharedPreferences aqua_shared_prefs = mContext.getSharedPreferences("aqua_shared_prefs", mContext.MODE_PRIVATE);
+        JSONObject geo_settings = new JSONObject();
 
-            try {
-                JSONObject geo_settings = new JSONObject();
+        SharedPreferences aqua_shared_prefs = mContext.getSharedPreferences("aqua_shared_prefs", mContext.MODE_PRIVATE);
+
+        try {
+
+            if (result.equalsIgnoreCase("error")) {
+                Toast.makeText(mContext, "Error Getting Location", Toast.LENGTH_SHORT).show();
+                geo_settings.put("location", "<???>");
+            } else {
                 geo_settings.put("location", result);
-                geo_settings.put("area", area);
-                geo_settings.put("geotype", geotype);
-                geo_settings.put("geodata", geodata);
-                geo_settings.put("lat", latstr);
-                geo_settings.put("lon", lonstr);
-
-                aqua_shared_prefs.edit().putString("!geo_" + name + "_settings", geo_settings.toString()).apply();
-
-            } catch (Exception e) {
-                Toast.makeText(mContext, "Geofence Parse Error", Toast.LENGTH_SHORT).show();
             }
+
+            geo_settings.put("area", area);
+            geo_settings.put("geotype", geotype);
+            geo_settings.put("geodata", geodata);
+            geo_settings.put("lat", latstr);
+            geo_settings.put("lon", lonstr);
+
+            aqua_shared_prefs.edit().putString("!geo_" + name + "_settings", geo_settings.toString()).apply();
+
+        } catch (Exception e) {
+            Toast.makeText(mContext, "Geofence Parse Error", Toast.LENGTH_SHORT).show();
         }
 
         Log.d("omg", result);

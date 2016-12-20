@@ -22,6 +22,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -55,7 +56,7 @@ public class AddDevice extends Activity implements QServerConnect.AsyncResponse{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_device);
 
-        ((TextView)((LinearLayout)((ViewGroup) getWindow().getDecorView()).getChildAt(0)).getChildAt(0)).setGravity(Gravity.CENTER);
+        //((TextView)((LinearLayout)((ViewGroup) getWindow().getDecorView()).getChildAt(0)).getChildAt(0)).setGravity(Gravity.CENTER);
 
         Button submitButton = (Button) findViewById(R.id.submit_button);
         Button cancelButton = (Button) findViewById(R.id.cancel_button);
@@ -65,121 +66,122 @@ public class AddDevice extends Activity implements QServerConnect.AsyncResponse{
         final String iid = aqua_shared_prefs.getString("iid", "Not Found");
         Log.d("iid", iid);
 
-        submitButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                EditText aquaid_edit = (EditText) findViewById(R.id.aquaid);
-                EditText passcode_edit = (EditText) findViewById(R.id.passcode);
+        if (submitButton != null) {
+            submitButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    EditText aquaid_edit = (EditText) findViewById(R.id.aquaid);
+                    EditText passcode_edit = (EditText) findViewById(R.id.passcode);
 
-                final String user_entered_aquaid = aquaid_edit.getText().toString();
-                final String user_entered_passcode = passcode_edit.getText().toString();
+                    final String user_entered_aquaid = aquaid_edit.getText().toString();
+                    final String user_entered_passcode = passcode_edit.getText().toString();
 
-                java.util.Map<String,?> keys = aqua_shared_prefs.getAll();
+                    java.util.Map<String, ?> keys = aqua_shared_prefs.getAll();
 
-                for(java.util.Map.Entry<String,?> entry : keys.entrySet()) {
-                    if (entry.getKey().endsWith("qdata")) {
-                        try {
-                            Log.d("test", entry.getValue().toString());
-                            JSONObject qdata_obj = new JSONObject(entry.getValue().toString());
-                            String already_added_aquaid = qdata_obj.getString("aquaid");
-                            String already_added_pass = qdata_obj.getString("pass");
+                    for (java.util.Map.Entry<String, ?> entry : keys.entrySet()) {
+                        if (entry.getKey().endsWith("qdata")) {
+                            try {
+                                Log.d("test", entry.getValue().toString());
+                                JSONObject qdata_obj = new JSONObject(entry.getValue().toString());
+                                String already_added_aquaid = qdata_obj.getString("aquaid");
+                                String already_added_pass = qdata_obj.getString("pass");
 
-                            Log.d("test", qdata_obj.toString());
+                                Log.d("test", qdata_obj.toString());
 
-                            if (user_entered_aquaid.equalsIgnoreCase(already_added_aquaid) && (user_entered_passcode.equalsIgnoreCase(already_added_pass))) {
-                                Toast.makeText(getBaseContext(), "Device already added", Toast.LENGTH_SHORT).show();
-                                return;
+                                if (user_entered_aquaid.equalsIgnoreCase(already_added_aquaid) && (user_entered_passcode.equalsIgnoreCase(already_added_pass))) {
+                                    Toast.makeText(getBaseContext(), "Device already added", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Toast.makeText(getBaseContext(), "Bad SharedPrefs", Toast.LENGTH_SHORT).show();
                             }
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Toast.makeText(getBaseContext(), "Bad SharedPrefs", Toast.LENGTH_SHORT).show();
                         }
                     }
-                }
 
 
+                    final JSONObject outgoing_json = new JSONObject();
 
-                final JSONObject outgoing_json = new JSONObject();
+                    try {
+                        outgoing_json.put("reqtype", "auth");
+                        outgoing_json.put("id", user_entered_aquaid);
+                        outgoing_json.put("pass", user_entered_passcode);
+                        outgoing_json.put("iid", iid);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
-                try {
-                    outgoing_json.put("reqtype", "auth");
-                    outgoing_json.put("id", user_entered_aquaid);
-                    outgoing_json.put("pass", user_entered_passcode);
-                    outgoing_json.put("iid", iid);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                    try {
 
-                try {
+                        new QServerConnect(a, new QServerConnect.AsyncResponse() {
 
-                    new QServerConnect(a, new QServerConnect.AsyncResponse(){
+                            @Override
+                            public void processFinish(String[] output) {
+                                //Here you will receive the result fired from async class
+                                //of onPostExecute(result) method.
+                                if (output[0].equalsIgnoreCase("failed")) {
+                                    Toast.makeText(getBaseContext(), "Server Error", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Log.d("ServerResponse", output[0]);
+                                    try {
+                                        JSONObject response_json = new JSONObject(output[0]);
 
-                        @Override
-                        public void processFinish(String[] output){
-                            //Here you will receive the result fired from async class
-                            //of onPostExecute(result) method.
-                            if (output[0].equalsIgnoreCase("failed")) {
-                                Toast.makeText(getBaseContext(), "Server Error", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Log.d("ServerResponse", output[0]);
-                                try {
-                                    JSONObject response_json = new JSONObject(output[0]);
-
-                                    String qresponse = response_json.getString("qresponse");
+                                        String qresponse = response_json.getString("qresponse");
 
 
-                                    if (qresponse.equalsIgnoreCase("success")) {
-                                        Toast.makeText(getBaseContext(), "Authentication Successful", Toast.LENGTH_SHORT).show();
+                                        if (qresponse.equalsIgnoreCase("success")) {
+                                            Toast.makeText(getBaseContext(), "Authentication Successful", Toast.LENGTH_SHORT).show();
 
-                                        JSONObject dummy = response_json.getJSONObject("qdata");
-                                        dummy.put("pass", user_entered_passcode);
-                                        dummy.put("aquaid", user_entered_aquaid);
+                                            JSONObject dummy = response_json.getJSONObject("qdata");
+                                            dummy.put("pass", user_entered_passcode);
+                                            dummy.put("aquaid", user_entered_aquaid);
 
-                                        Log.d("dcd", dummy.toString());
+                                            Log.d("dcdq", dummy.toString());
 
-                                        String aqsens = response_json.getString("aqsens");
+                                            String aqsens = response_json.getString("aqsens");
 
-                                        String qdata = response_json.getString("qdata");
+                                            String qdata = response_json.getString("qdata");
 
-                                        Log.d("dcd", aqsens);
+                                            Log.d("dcd", aqsens);
 
-                                        Intent intent=new Intent(a, NewDevice.class);
-                                        intent.putExtra("qdata", qdata);
-                                        intent.putExtra("aqsens", aqsens);
-                                        Log.d("test2", output[1]);
-                                        intent.putExtra("loc", output[1]);
-                                        intent.putExtra("batt", output[2]);
+                                            Intent intent = new Intent(a, NewDevice.class);
+                                            intent.putExtra("qdata", qdata);
+                                            intent.putExtra("aqsens", aqsens);
+                                            Log.d("test2", output[1]);
+                                            intent.putExtra("loc", output[1]);
+                                            intent.putExtra("batt", output[2]);
 
-                                        finish();
+                                            finish();
 
-                                        startActivity(intent);
+                                            startActivity(intent);
 
-                                    } else {
-                                        Toast.makeText(getBaseContext(), "Authentication Failed", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Toast.makeText(getBaseContext(), "Authentication Failed", Toast.LENGTH_SHORT).show();
+                                        }
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
-
-                                } catch (Exception e) {
-                                    e.printStackTrace();
                                 }
                             }
-                        }
-                    }).execute(outgoing_json);
+                        }).execute(outgoing_json);
 
 
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
                 }
+            });
 
-            }
-        });
-
-        cancelButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+            cancelButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    finish();
+                }
+            });
+        }
     }
     public void processFinish(String[] output){
         //Here you will receive the result fired from async class

@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Activity;
-import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,26 +17,26 @@ import android.widget.TextView;
 
 import java.util.Map;
 
-public class AddNotifSelectDevice extends Activity {
+public class AddNotifSelectGeo extends Activity {
 
-    Integer device_ctr;
-    String current_checked_device;
+    Integer geo_ctr;
+    String current_checked_geo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_notif_select_device);
+        setContentView(R.layout.activity_add_notif_select_geo);
 
-        final TableLayout device_table = (TableLayout) findViewById(R.id.device_table);
+        final TableLayout geo_table = (TableLayout) findViewById(R.id.sel_geo_table);
 
-        Button device_cancel = (Button) findViewById(R.id.cancel_btn);
-        Button device_ok = (Button) findViewById(R.id.ok_btn);
+        Button geo_cancel = (Button) findViewById(R.id.cancel_btn_sel_geo);
+        Button geo_ok = (Button) findViewById(R.id.ok_btn_sel_geo);
 
         float d = getBaseContext().getResources().getDisplayMetrics().density;
         int den = (int) d;
 
-        device_ctr = 0;
-        current_checked_device = "";
+        geo_ctr = 0;
+        current_checked_geo = "";
 
         final SharedPreferences aqua_shared_prefs = getSharedPreferences("aqua_shared_prefs", MODE_PRIVATE);
 
@@ -45,9 +44,9 @@ public class AddNotifSelectDevice extends Activity {
 
         for(Map.Entry<String,?> entry : keys.entrySet()){
             String key = entry.getKey();
-            if (key.startsWith("!dev_") && key.endsWith("_settings")) {
+            if (key.startsWith("!geo_") && key.endsWith("_settings")) {
                 String device_name = key.substring(5, key.length() - 9);
-                device_ctr++;
+                geo_ctr++;
 
                 RelativeLayout.LayoutParams nmrllp = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 80*den);
                 nmrllp.addRule(RelativeLayout.CENTER_VERTICAL);
@@ -57,23 +56,23 @@ public class AddNotifSelectDevice extends Activity {
                 params28.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                 params28.addRule(RelativeLayout.CENTER_VERTICAL);
                 device_checkbox.setLayoutParams(params28);
-                device_checkbox.setId(1000 + device_ctr);
+                device_checkbox.setId(1000 + geo_ctr);
 
                 device_checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked){
-                        for (int i=0; i<device_ctr; i++) {
-                            RelativeLayout rl = (RelativeLayout) device_table.getChildAt(i);
-                            CheckBox cb = (CheckBox) rl.getChildAt(0);
-                            if (cb.getId() == buttonView.getId()) {
-                                TextView tv = (TextView) rl.getChildAt(1);
-                                current_checked_device = tv.getText().toString();
-                            } else {
-                                cb.setChecked(false);
+                        if (isChecked){
+                            for (int i=0; i<geo_ctr; i++) {
+                                RelativeLayout rl = (RelativeLayout) geo_table.getChildAt(i);
+                                CheckBox cb = (CheckBox) rl.getChildAt(0);
+                                if (cb.getId() == buttonView.getId()) {
+                                    TextView tv = (TextView) rl.getChildAt(1);
+                                    current_checked_geo = tv.getText().toString();
+                                } else {
+                                    cb.setChecked(false);
+                                }
                             }
                         }
-                    }
                     }
                 });
 
@@ -97,10 +96,10 @@ public class AddNotifSelectDevice extends Activity {
                 sgrl.addView(device_checkbox);
                 sgrl.addView(device_tv);
 
-                device_table.addView(sgrl);
+                geo_table.addView(sgrl);
             }
 
-            device_cancel.setOnClickListener(new View.OnClickListener() {
+            geo_table.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent returnIntent = new Intent();
@@ -109,19 +108,28 @@ public class AddNotifSelectDevice extends Activity {
                 }
             });
 
-            device_ok.setOnClickListener(new View.OnClickListener() {
+            geo_ok.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (current_checked_device.isEmpty()) {
+                    if (current_checked_geo.isEmpty()) {
                         Intent returnIntent = new Intent();
                         setResult(Activity.RESULT_CANCELED, returnIntent);
                         finish();
                     } else {
                         Intent returnIntent = new Intent();
-                        returnIntent.putExtra("result", current_checked_device);
+                        returnIntent.putExtra("result", current_checked_geo);
                         setResult(Activity.RESULT_OK, returnIntent);
                         finish();
                     }
+                }
+            });
+
+            geo_cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent returnIntent = new Intent();
+                    setResult(Activity.RESULT_CANCELED, returnIntent);
+                    finish();
                 }
             });
 

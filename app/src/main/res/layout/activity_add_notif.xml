@@ -11,7 +11,7 @@
     tools:context="com.example.tars.aquamanager.AddNotif">
 
     <ScrollView
-        android:layout_width="260dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
     </ScrollView>
@@ -28,7 +28,8 @@
             android:id="@+id/device_tv"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:textColor="@color/colorAqua" />
 
         <Button
             android:layout_width="wrap_content"
@@ -51,7 +52,8 @@
             android:id="@+id/trigger_tv"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:textColor="@color/colorAqua" />
 
         <Button
             android:layout_width="wrap_content"
@@ -74,7 +76,8 @@
             android:id="@+id/alarm_tv"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:textColor="@color/colorAqua" />
 
         <Button
             android:layout_width="wrap_content"
@@ -92,7 +95,9 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:background="@color/holoBlueDark">
 
         <TextView
             android:layout_width="wrap_content"
@@ -100,7 +105,13 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/notif_sen"
             android:layout_centerInParent="true"
-            android:text="@string/notif_start" />
+            android:text="@string/notif_start"
+            android:padding="5dp"
+            android:ellipsize="none"
+            android:singleLine="false"
+            android:scrollHorizontally="false"
+            android:maxLines="4"
+            android:gravity="center_vertical|center_horizontal" />
     </RelativeLayout>
 
     <LinearLayout
@@ -114,7 +125,7 @@
             android:layout_height="match_parent">
 
             <Button
-                android:id="@+id/submit_button"
+                android:id="@+id/submit_button_an"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -123,7 +134,7 @@
                 android:textStyle="bold" />
 
             <Button
-                android:id="@+id/cancel_button"
+                android:id="@+id/cancel_button_an"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"

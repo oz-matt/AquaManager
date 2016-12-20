@@ -36,13 +36,13 @@
             android:label="@string/title_activity_add_device"
             android:noHistory="true"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Dialog" />
+            android:theme="@android:style/Theme.Holo.Dialog" />
         <activity
             android:name=".NewDevice"
             android:label="@string/title_activity_new_device"
             android:noHistory="true"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Dialog" />
+            android:theme="@android:style/Theme.Holo.Dialog" />
         <activity
             android:name=".MainMap"
             android:label="Hi" />
@@ -70,7 +70,7 @@
             android:label="@string/title_activity_new_geo_info"
             android:noHistory="true"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Dialog" />
+            android:theme="@android:style/Theme.Holo.Dialog" />
         <activity
             android:name=".GetLocationOnly"
             android:label="@string/title_activity_get_location_only" />
@@ -86,7 +86,7 @@
             android:name=".AddNotif"
             android:label="@string/title_activity_add_notif"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Dialog" />
+            android:theme="@android:style/Theme.Holo.Dialog" />
         <activity
             android:name=".Settings"
             android:windowSoftInputMode="stateHidden|adjustResize" />
@@ -94,12 +94,28 @@
             android:name=".AddNotifSelectDevice"
             android:label="Select Device"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Dialog" />
+            android:theme="@android:style/Theme.Holo.Dialog" />
         <activity
             android:name=".AddNotifSelectTrigger"
             android:label="Select Trigger"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Dialog"/>
+            android:theme="@android:style/Theme.Holo.Dialog" />
+        <activity
+            android:name=".AddNotifSelectGeo"
+            android:label="Select Geofence"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo.Dialog" />
+        <activity
+            android:name=".AddNotifSelectMac"
+            android:label="@string/title_activity_add_notif_select_mac"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo.Dialog"
+            android:windowSoftInputMode="stateVisible" />
+        <activity
+            android:name=".AddNotifSelectAlarm"
+            android:label="Select Alarm Type"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo.Dialog" />
     </application>
 
 </manifest>

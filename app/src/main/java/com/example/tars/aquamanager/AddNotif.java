@@ -2,19 +2,26 @@ package com.example.tars.aquamanager;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.MotionEvent;
+import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class AddNotif extends Activity {
 
+    private Activity a = this;
+
     static final int GET_DEVICE_FOR_NOTIF = 1;
     static final int GET_TRIGGER_FOR_NOTIF = 2;
+    static final int GET_ALARM_FOR_NOTIF = 3;
 
     TextView tv_device;
     TextView tv_trigger;
@@ -24,20 +31,163 @@ public class AddNotif extends Activity {
     String dev = "";
     String trig = "";
     String alm = "";
+    String trg = "";
+
+    String triggerType = "Unk";
+    String geo = "Unk";
+    String mac = "Unk";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_notif);
 
+        final SharedPreferences aqua_shared_prefs = getSharedPreferences("aqua_shared_prefs", MODE_PRIVATE);
+
         Button btn_device = (Button) findViewById(R.id.device_select);
         Button btn_trigger = (Button) findViewById(R.id.trigger_select);
         Button btn_alarm = (Button) findViewById(R.id.alarm_select);
+
+        Button cancel_btn = (Button) findViewById(R.id.cancel_button_an);
+        Button ok_btn = (Button) findViewById(R.id.submit_button_an);
 
         tv_device = (TextView) findViewById(R.id.device_tv);
         tv_trigger = (TextView) findViewById(R.id.trigger_tv);
         tv_alarm = (TextView) findViewById(R.id.alarm_tv);
         notif_sentence = (TextView) findViewById(R.id.notif_sen);
+
+        cancel_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        ok_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (dev.isEmpty()) {
+                    Toast.makeText(getBaseContext(), "Please select a device", Toast.LENGTH_SHORT).show();
+                } else if (trig.isEmpty()) {
+                    Toast.makeText(getBaseContext(), "Please select a trigger", Toast.LENGTH_SHORT).show();
+                } else if (alm.isEmpty()) {
+                    Toast.makeText(getBaseContext(), "Please select an alarm", Toast.LENGTH_SHORT).show();
+                } else if (trg.isEmpty()) {
+                    Toast.makeText(getBaseContext(), "Please select a target", Toast.LENGTH_SHORT).show();
+                } else {
+                    //Good Notification
+                    final JSONObject outgoing_json = new JSONObject();
+
+                    final String iid = aqua_shared_prefs.getString("iid", "Not Found");
+                    final String dev_qdata = aqua_shared_prefs.getString("!dev_" + dev + "_qdata", "Not Found");
+
+                    if (dev_qdata.equalsIgnoreCase("Not Found")) {
+                        Toast.makeText(getBaseContext(), "101: Device data missing", Toast.LENGTH_SHORT).show();
+                    } else {
+                        try {
+                            final JSONObject dev_qdata_json = new JSONObject(dev_qdata);
+                            String aquakey = dev_qdata_json.getString("aquakey");
+
+                            final JSONObject notif_data = new JSONObject();
+                            notif_data.put("alert", "alm");
+                            notif_data.put("aquaname", dev);
+                            notif_data.put("aquauuid", iid);
+                            notif_data.put("target", trg);
+                            notif_data.put("trigger", triggerType);
+                            //notif_data.put("anid", "12312351235");
+                            if ((triggerType.equalsIgnoreCase("entersGeo")) || (triggerType.equalsIgnoreCase("exitsGeo"))) {
+                                String geo_settings = aqua_shared_prefs.getString("!geo_" + geo + "_settings", "Not Found");
+                                Log.d("gotit", geo_settings);
+                                Log.d("gotit", geo);
+
+                                final JSONObject geo_settings_json = new JSONObject(geo_settings);
+
+                                String type = geo_settings_json.get("geotype").toString();
+
+                                if (type.equalsIgnoreCase("circle")) {
+                                    String data = geo_settings_json.get("geodata").toString();
+                                    notif_data.put("geotype", type);
+                                    notif_data.put("geodata", data);
+                                    notif_data.put("geoname", geo);
+                                } else {
+                                    final JSONArray geo_poly_array = new JSONArray(geo_settings_json.get("geodata").toString());
+
+                                    notif_data.put("geotype", type);
+                                    notif_data.put("geodata", geo_poly_array);
+                                    notif_data.put("geoname", geo);
+                                }
+
+
+                            } else if (triggerType.equalsIgnoreCase("seesMac")) {
+                                notif_data.put("macaddress", mac);
+                            }
+
+                            outgoing_json.put("reqtype", "notif");
+                            outgoing_json.put("iid", iid);
+                            outgoing_json.put("aquakey", aquakey);
+                            outgoing_json.put("data", notif_data);
+
+                            new QServerConnect(a, new QServerConnect.AsyncResponse() {
+
+                                @Override
+                                public void processFinish(String[] output) {
+                                    //Here you will receive the result fired from async class
+                                    //of onPostExecute(result) method.
+                                    if (output[0].equalsIgnoreCase("failed")) {
+                                        Toast.makeText(getBaseContext(), "Server Error", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Log.d("ServerResponse", output[0]);
+                                        /*try {
+                                            JSONObject response_json = new JSONObject(output[0]);
+
+                                            String qresponse = response_json.getString("qresponse");
+
+
+                                            if (qresponse.equalsIgnoreCase("success")) {
+                                                Toast.makeText(getBaseContext(), "Authentication Successful", Toast.LENGTH_SHORT).show();
+
+                                                JSONObject dummy = response_json.getJSONObject("qdata");
+                                                dummy.put("pass", user_entered_passcode);
+                                                dummy.put("aquaid", user_entered_aquaid);
+
+                                                Log.d("dcdq", dummy.toString());
+
+                                                String aqsens = response_json.getString("aqsens");
+
+                                                String qdata = response_json.getString("qdata");
+
+                                                Log.d("dcd", aqsens);
+
+                                                Intent intent = new Intent(a, NewDevice.class);
+                                                intent.putExtra("qdata", qdata);
+                                                intent.putExtra("aqsens", aqsens);
+                                                Log.d("test2", output[1]);
+                                                intent.putExtra("loc", output[1]);
+                                                intent.putExtra("batt", output[2]);
+
+                                                finish();
+
+                                                startActivity(intent);
+
+                                            } else {
+                                                Toast.makeText(getBaseContext(), "Authentication Failed", Toast.LENGTH_SHORT).show();
+                                            }
+
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }*/
+                                    }
+                                }
+                            }).execute(outgoing_json);
+
+                        } catch (JSONException e) {
+                            Toast.makeText(getBaseContext(), "102: Device data corrupted", Toast.LENGTH_SHORT).show();
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        });
 
         btn_device.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,21 +205,56 @@ public class AddNotif extends Activity {
             }
         });
 
+        btn_alarm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AddNotif.this, AddNotifSelectAlarm.class);
+                startActivityForResult(intent, GET_ALARM_FOR_NOTIF);
+            }
+        });
+
     }
 
-    private String getNewNotifSentence() {
+    private String getNewNotifSentenceAndUpdateServerVars() {
         String dev_buf;
         String trig_buf;
         String alm_buf;
+        String trg_buf;
+
+        if (trig.isEmpty()) triggerType = "Unk";
+        else if (trig.startsWith("enter")) {
+            triggerType = "entersGeo";
+            String[] chop = trig.split(" ");
+            geo = chop[1].substring(1, chop[1].length() - 1);
+        } else if (trig.startsWith("exit")) {
+            triggerType = "exitsGeo";
+            String[] chop = trig.split(" ");
+            geo = chop[1].substring(1, chop[1].length() - 1);
+        } else if (trig.equalsIgnoreCase("uploads data")) {
+            triggerType = "uploadsData";
+        } else if (trig.equalsIgnoreCase("starts moving")) {
+            triggerType = "startsMoving";
+        } else if (trig.equalsIgnoreCase("stops moving")) {
+            triggerType = "stopsMoving";
+        } else if (trig.startsWith("sees")) {
+            triggerType = "seesMac";
+            String[] chop = trig.split(" ");
+            mac = chop[1];
+        } else triggerType = "Error";
 
         if (dev.isEmpty()) dev_buf = "<?>";
             else dev_buf = dev;
-        if (trig.isEmpty()) trig_buf = "<?>";
-            else trig_buf = trig;
-        if (alm.isEmpty()) alm_buf = "<?>";
-            else alm_buf = alm;
+        if (trig.isEmpty()) trig_buf = " <?>";
+        else if (trig.equalsIgnoreCase("low battery")) {
+            trig_buf = "'s battery is low";
+        } else trig_buf = " " + trig;
+        if (alm.isEmpty()) alm_buf = "a <?>";
+            else if (alm.equalsIgnoreCase("text")) alm_buf = "a text.";
+            else alm_buf = "an e-mail.";
+        if (trg.isEmpty()) trg_buf = "<?>";
+            else trg_buf = trg;
 
-        String full_sentence = "When " + dev_buf + " enters " + trig_buf + ", send <?> a " + alm_buf;
+        String full_sentence = "When " + dev_buf + trig_buf + ", send " + trg_buf + " " + alm_buf;
 
         return full_sentence;
     }
@@ -80,7 +265,8 @@ public class AddNotif extends Activity {
         if (requestCode == GET_DEVICE_FOR_NOTIF) {
             if(resultCode == Activity.RESULT_OK){
                 String result = data.getStringExtra("result");
-                tv_device.setText("Device: " + result);
+                String htmltext = "<font color=#57a6e2>Device: </font> <font color=#ffffff>" + result + "</font>";
+                tv_device.setText(Html.fromHtml(htmltext));
                 dev = result;
             }
             if (resultCode == Activity.RESULT_CANCELED) {
@@ -88,14 +274,26 @@ public class AddNotif extends Activity {
         } else if (requestCode == GET_TRIGGER_FOR_NOTIF) {
             if(resultCode == Activity.RESULT_OK){
                 String result = data.getStringExtra("result");
-                tv_trigger.setText("Trigger: " + result);
+                String htmltext = "<font color=#57a6e2>Trigger: </font> <font color=#ffffff>" + result + "</font>";
+                tv_trigger.setText(Html.fromHtml(htmltext));
                 trig = result;
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+            }
+        } else if (requestCode == GET_ALARM_FOR_NOTIF) {
+            if(resultCode == Activity.RESULT_OK){
+                String result = data.getStringExtra("result");
+                String target = data.getStringExtra("target");
+                String htmltext = "<font color=#57a6e2>Alarm: </font> <font color=#ffffff>" + result + "</font>";
+                tv_alarm.setText(Html.fromHtml(htmltext));
+                alm = result;
+                trg = target;
             }
             if (resultCode == Activity.RESULT_CANCELED) {
             }
         }
 
-        notif_sentence.setText(getNewNotifSentence());
+        notif_sentence.setText(getNewNotifSentenceAndUpdateServerVars());
 
     }
 }

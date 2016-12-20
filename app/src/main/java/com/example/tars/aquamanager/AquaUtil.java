@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.text.Html;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -802,7 +803,7 @@ public class AquaUtil {
                     nclp.width=(0);
                     newRad.setGravity(Gravity.CENTER);
                     nclp.setMargins(0, margin, 0, margin);
-                    newRad.setText(geofence_area + " mi^2");
+                    newRad.setText(Html.fromHtml(geofence_area + " mi<sup>2</sup>"));
                     newRad.setLines(2);
                     newRad.setLayoutParams(nclp);
                     newRad.setBackgroundColor(ContextCompat.getColor(context, R.color.recentUpdateGreen));

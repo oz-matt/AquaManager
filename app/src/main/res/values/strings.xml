@@ -91,4 +91,7 @@
     <string name="title_activity_get_location_only">GetLocationOnly</string>
     <string name="title_activity_add_notif_select_device">AddNotifSelectDevice</string>
     <string name="title_activity_add_notif_select_trigger">AddNotifSelectTrigger</string>
+    <string name="title_activity_add_notif_select_geo">AddNotifSelectGeo</string>
+    <string name="title_activity_add_notif_select_mac">Enter Mac Address</string>
+    <string name="title_activity_add_notif_select_alarm">AddNotifSelectAlarm</string>
 </resources>

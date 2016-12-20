@@ -3,6 +3,7 @@ package com.example.tars.aquamanager;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -12,6 +13,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import org.json.JSONObject;
+
+import java.util.Map;
 
 //import java.util.MainMap;
 
@@ -92,6 +97,34 @@ public class Main extends AppCompatActivity {
         return true;
     }
 
+    private static boolean checkIfAllGeofencesHaveGoodLocationsAndFixTheOnesThatDont() {
+
+        /*final SharedPreferences aqua_shared_prefs = context.getSharedPreferences("aqua_shared_prefs", MODE_PRIVATE);
+
+        Map<String,?> keys = aqua_shared_prefs.getAll();
+
+        for(Map.Entry<String,?> entry : keys.entrySet()) {
+            String key = entry.getKey();
+            if (key.startsWith("!geo_") && key.endsWith("_settings")) {
+                try {
+                    JSONObject geo_settings = new JSONObject(entry.getValue().toString());
+                    String locstr = geo_settings.getString("location");
+                    if (locstr.equalsIgnoreCase("<???>")) {
+                        //Found a geofence with no location
+
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }*/
+
+        //ToDo: Implement later :[
+
+        return true;
+    }
+
     public static void updateEveryDevicesAqsensElementAndRefreshTable(final Context context) {
 
         String[] dummy = {};
@@ -108,7 +141,14 @@ public class Main extends AppCompatActivity {
                         Toast.makeText(context, "No Devices Found", Toast.LENGTH_SHORT).show();
                     } else if (output.equalsIgnoreCase("success")) {
                         HomeDevices.refresh_device_table(context, HomeDevices.view);
-                        Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
+
+                        if (checkIfAllGeofencesHaveGoodLocationsAndFixTheOnesThatDont()) {
+
+                            Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(context, "Failed to refresh geos", Toast.LENGTH_SHORT).show();
+                        }
+
                     } else {
                         Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
                     }
@@ -119,6 +159,7 @@ public class Main extends AppCompatActivity {
             e.printStackTrace();
             Toast.makeText(context, "QServer Error", Toast.LENGTH_SHORT).show();
         }
+
     }
 
     public void onListItemClick(ListView parent, View v, int position, long id){
