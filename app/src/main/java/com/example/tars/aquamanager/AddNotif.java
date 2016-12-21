@@ -1,6 +1,8 @@
 package com.example.tars.aquamanager;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,6 +16,9 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Map;
+import java.util.UUID;
 
 public class AddNotif extends Activity {
 
@@ -86,12 +91,14 @@ public class AddNotif extends Activity {
                     } else {
                         try {
                             final JSONObject dev_qdata_json = new JSONObject(dev_qdata);
-                            String aquakey = dev_qdata_json.getString("aquakey");
+                            final String aquakey = dev_qdata_json.getString("aquakey");
+
+                            final String uuid = UUID.randomUUID().toString().substring(0,8);
 
                             final JSONObject notif_data = new JSONObject();
-                            notif_data.put("alert", "alm");
+                            notif_data.put("alert", alm);
                             notif_data.put("aquaname", dev);
-                            notif_data.put("aquauuid", iid);
+                            notif_data.put("ntfuuid", uuid);
                             notif_data.put("target", trg);
                             notif_data.put("trigger", triggerType);
                             //notif_data.put("anid", "12312351235");
@@ -134,40 +141,35 @@ public class AddNotif extends Activity {
                                     //Here you will receive the result fired from async class
                                     //of onPostExecute(result) method.
                                     if (output[0].equalsIgnoreCase("failed")) {
-                                        Toast.makeText(getBaseContext(), "Server Error", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getBaseContext(), "Network Error", Toast.LENGTH_SHORT).show();
                                     } else {
                                         Log.d("ServerResponse", output[0]);
-                                        /*try {
+                                        try {
                                             JSONObject response_json = new JSONObject(output[0]);
 
                                             String qresponse = response_json.getString("qresponse");
 
-
                                             if (qresponse.equalsIgnoreCase("success")) {
-                                                Toast.makeText(getBaseContext(), "Authentication Successful", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(getBaseContext(), "Notification Successfully Added", Toast.LENGTH_SHORT).show();
 
-                                                JSONObject dummy = response_json.getJSONObject("qdata");
-                                                dummy.put("pass", user_entered_passcode);
-                                                dummy.put("aquaid", user_entered_aquaid);
+                                                Integer num_notifs = aqua_shared_prefs.getInt("num_notifs", -1);
 
-                                                Log.d("dcdq", dummy.toString());
+                                                if (num_notifs < 0) Toast.makeText(getBaseContext(), "Notification Error 101", Toast.LENGTH_SHORT).show();
 
-                                                String aqsens = response_json.getString("aqsens");
+                                                num_notifs++;
 
-                                                String qdata = response_json.getString("qdata");
+                                                aqua_shared_prefs.edit().putString("!ntf_" + String.valueOf(num_notifs) + "_tkey", aquakey).apply();
+                                                aqua_shared_prefs.edit().putString("!ntf_" + String.valueOf(num_notifs) + "_uuid", uuid).apply();
+                                                aqua_shared_prefs.edit().putString("!ntf_" + String.valueOf(num_notifs) + "_data", notif_data.toString()).apply();
 
-                                                Log.d("dcd", aqsens);
+                                                Map<String,?> keys = aqua_shared_prefs.getAll();
 
-                                                Intent intent = new Intent(a, NewDevice.class);
-                                                intent.putExtra("qdata", qdata);
-                                                intent.putExtra("aqsens", aqsens);
-                                                Log.d("test2", output[1]);
-                                                intent.putExtra("loc", output[1]);
-                                                intent.putExtra("batt", output[2]);
+                                                for(Map.Entry<String,?> entry : keys.entrySet()){
+                                                    Log.d("map valuez",entry.getKey() + ": " +
+                                                            entry.getValue().toString());
+                                                }
 
                                                 finish();
-
-                                                startActivity(intent);
 
                                             } else {
                                                 Toast.makeText(getBaseContext(), "Authentication Failed", Toast.LENGTH_SHORT).show();
@@ -175,7 +177,7 @@ public class AddNotif extends Activity {
 
                                         } catch (Exception e) {
                                             e.printStackTrace();
-                                        }*/
+                                        }
                                     }
                                 }
                             }).execute(outgoing_json);

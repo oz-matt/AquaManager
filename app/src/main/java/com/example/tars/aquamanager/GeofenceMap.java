@@ -376,11 +376,26 @@ public class GeofenceMap extends FragmentActivity implements OnMapReadyCallback,
                 Double area_d = (calculateAreaOfGPSPolygonOnEarthInSquareMeters(box_latlngs))/(2.59e6);
                 Integer area = area_d.intValue();
 
-                String[] getlocdata = {lat, lon, name, "polygon", box_latlngs.toString(), area.toString()};
+                try {
 
-                GetLocationOnly get = new GetLocationOnly(activity);
-                get.execute(getlocdata);
+                    JSONArray box_json_array = new JSONArray();
 
+                    for (int i = 0; i<8; i++) {
+                        JSONObject lat_lang = new JSONObject();
+                        lat_lang.put("lat", box_latlngs.get(i).latitude);
+                        lat_lang.put("lon", box_latlngs.get(i).longitude);
+                        box_json_array.put(i, lat_lang);
+                    }
+
+                    String[] getlocdata = {lat, lon, name, "polygon", box_json_array.toString(), area.toString()};
+
+                    GetLocationOnly get = new GetLocationOnly(activity);
+                    get.execute(getlocdata);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(context, "JSON Exception 101", Toast.LENGTH_SHORT).show();
+                }
                 //activity.finish();
             }
         });

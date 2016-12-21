@@ -64,7 +64,7 @@ public class AddDevice extends Activity implements QServerConnect.AsyncResponse{
         final SharedPreferences aqua_shared_prefs = getSharedPreferences("aqua_shared_prefs", MODE_PRIVATE);
 
         final String iid = aqua_shared_prefs.getString("iid", "Not Found");
-        Log.d("iid", iid);
+        //Log.d("iid", iid);
 
         if (submitButton != null) {
             submitButton.setOnClickListener(new OnClickListener() {
@@ -121,7 +121,7 @@ public class AddDevice extends Activity implements QServerConnect.AsyncResponse{
                                 //Here you will receive the result fired from async class
                                 //of onPostExecute(result) method.
                                 if (output[0].equalsIgnoreCase("failed")) {
-                                    Toast.makeText(getBaseContext(), "Server Error", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getBaseContext(), "Network Error", Toast.LENGTH_SHORT).show();
                                 } else {
                                     Log.d("ServerResponse", output[0]);
                                     try {

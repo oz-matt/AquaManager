@@ -89,6 +89,34 @@ import java.util.UUID;
             lat
             lon
 
+        **Notifications**
+
+        !ntf_[num_notifs]_tkey
+            [aquakey]
+        !ntf_[num_notifs]_uuid
+            [uuid]
+        !ntf_[num_notifs]_data
+            alert: text, email
+            aquaname: myaqua
+            ntfuuid: 0e4fhtvnuh-345356-5646-86576-t7vnyfvuh
+            target: +12037701412
+            trigger: entersGeo
+            geotype: polygon
+            geoname: mygeo
+            geodata:
+                [
+                    {
+                        lat: 56.6877667
+                        lon: 123.747676
+                    },
+                    {
+                        lat: 56.6877667
+                        lon: 123.747676
+                    }
+                    ...
+                 ]
+
+
  *
  */
 public class AquaUtil {
@@ -110,6 +138,11 @@ public class AquaUtil {
             String iid = UUID.randomUUID().toString();
             aqua_shared_prefs.edit().putString("iid", iid).commit();
         }
+
+        if (!aqua_shared_prefs.contains("num_notifs")) {
+            aqua_shared_prefs.edit().putInt("num_notifs", 0).commit();
+        }
+
     }
 
     public static boolean populateDeviceRows(final Context context, TableLayout layout, final String clickFunction) {

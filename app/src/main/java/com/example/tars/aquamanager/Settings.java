@@ -244,6 +244,19 @@ public class Settings extends Activity {
         svll.addView(nmrl);
         svll.addView(sgrl);
 
+        TextView text_delete_notif = new TextView(this);
+        text_delete_notif.setText("Button to delete notification with the 8-digit uuid");
+        text_delete_notif.setPadding(8*den, 8*den, 8*den, 8*den);
+        //tv_numMarkers.setId(131);
+        text_delete_notif.setTextSize(20);
+        text_delete_notif.setTextColor(Color.rgb(240,240,240));
+        RelativeLayout.LayoutParams text_delete_notifll = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        //paramsNumMarkTitle.addRule(RelativeLayout.BELOW, divider2.getId());
+        paramsNumMarkTitle.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        text_delete_notif.setLayoutParams(text_delete_notifll);
+
+        svll.addView(text_delete_notif);
+
         btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
