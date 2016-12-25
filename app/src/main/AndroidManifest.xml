@@ -116,6 +116,11 @@
             android:label="Select Alarm Type"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Holo.Dialog" />
+        <activity
+            android:name=".RemoveNotifFromID"
+            android:label="Enter ID and Device Name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo.Dialog"/>
     </application>
 
 </manifest>

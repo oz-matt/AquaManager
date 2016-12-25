@@ -79,20 +79,8 @@ public class AddNotifSelectTrigger extends Activity {
                                 Intent getentergeo = new Intent(AddNotifSelectTrigger.this, AddNotifSelectGeo.class);
                                 startActivityForResult(getentergeo, ENTER_GEOFENCE);
                             } else {
-                                new AlertDialog.Builder(context)
-                                    .setTitle("No Geofence")
-                                    .setMessage("Create at least one geofence to use this function")
-                                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
 
-                                        }
-                                    })
-                                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
 
-                                        }
-                                    })
-                                    .show();
                             }
                             break;
                         case EXIT_GEOFENCE :

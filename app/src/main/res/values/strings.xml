@@ -94,4 +94,5 @@
     <string name="title_activity_add_notif_select_geo">AddNotifSelectGeo</string>
     <string name="title_activity_add_notif_select_mac">Enter Mac Address</string>
     <string name="title_activity_add_notif_select_alarm">AddNotifSelectAlarm</string>
+    <string name="title_activity_remove_notif_from_id">RemoveNotifFromID</string>
 </resources>

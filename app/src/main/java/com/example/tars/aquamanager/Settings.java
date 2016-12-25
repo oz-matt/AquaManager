@@ -1,6 +1,7 @@
 package com.example.tars.aquamanager;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
@@ -23,6 +24,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.google.android.gms.appindexing.Action;
@@ -203,7 +206,7 @@ public class Settings extends Activity {
         nmrl.addView(numMarkers);
 
         TextView showGeos_tv = new TextView(this);
-        showGeos_tv.setText("Show Geofences On MainMap");
+        showGeos_tv.setText("Show Geofences On Map");
         showGeos_tv.setPadding(8*den, 8*den, 8*den, 8*den);
         //tv_numMarkers.setId(131);
         showGeos_tv.setTextSize(20);
@@ -229,7 +232,6 @@ public class Settings extends Activity {
         if((aqua_shared_prefs.getBoolean("!set_showGeos", false))) Log.d("bool", "yes");
         else Log.d("bool", "no");
 
-
         RelativeLayout sgrl = new RelativeLayout(this);
         RelativeLayout.LayoutParams sgrllp = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, 80*den);
         sgrllp.addRule(RelativeLayout.CENTER_VERTICAL);
@@ -245,17 +247,52 @@ public class Settings extends Activity {
         svll.addView(sgrl);
 
         TextView text_delete_notif = new TextView(this);
-        text_delete_notif.setText("Button to delete notification with the 8-digit uuid");
+        text_delete_notif.setText("Remove Notification From ID");
         text_delete_notif.setPadding(8*den, 8*den, 8*den, 8*den);
-        //tv_numMarkers.setId(131);
         text_delete_notif.setTextSize(20);
         text_delete_notif.setTextColor(Color.rgb(240,240,240));
         RelativeLayout.LayoutParams text_delete_notifll = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        //paramsNumMarkTitle.addRule(RelativeLayout.BELOW, divider2.getId());
-        paramsNumMarkTitle.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        text_delete_notifll.addRule(RelativeLayout.CENTER_VERTICAL);
         text_delete_notif.setLayoutParams(text_delete_notifll);
 
-        svll.addView(text_delete_notif);
+        Button btn_rmntfid = new Button(this);
+        btn_rmntfid.setPadding(8*den, 8*den, 8*den, 8*den);
+        btn_rmntfid.setTextSize(18);
+        btn_rmntfid.setText("Enter ID");
+        LinearLayout.LayoutParams btn_rmntfidll = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 0.5f);
+        btn_rmntfid.setLayoutParams(btn_rmntfidll);
+
+        btn_rmntfid.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Settings.this, RemoveNotifFromID.class);
+                startActivityForResult(intent, 0);
+            }
+        });
+
+        LinearLayout ll1 = new LinearLayout(this);
+        LinearLayout ll2 = new LinearLayout(this);
+        //LinearLayout ll3 = new LinearLayout(this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        lp.weight = 1;
+        ll1.setLayoutParams(lp);
+        ll2.setLayoutParams(lp);
+        //ll3.setLayoutParams(lp);
+
+        RelativeLayout sfsrl = new RelativeLayout(this);
+        RelativeLayout.LayoutParams sfslp = new RelativeLayout.LayoutParams(150*den, LayoutParams.MATCH_PARENT);
+        sfslp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        sfslp.addRule(RelativeLayout.CENTER_VERTICAL);
+        sfsrl.setLayoutParams(sfslp);
+        sfsrl.addView(btn_rmntfid);
+
+        ll2.addView(text_delete_notif);
+        //ll3.addView(sfsrl);
+
+        ll1.addView(ll2);
+        ll1.addView(sfsrl);
+
+        svll.addView(ll1);
 
         btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
