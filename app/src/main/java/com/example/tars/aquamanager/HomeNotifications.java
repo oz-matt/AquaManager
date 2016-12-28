@@ -7,17 +7,20 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TableLayout;
 
 public class HomeNotifications extends Fragment {
 
     public static View view;
     Context context;
+    Fragment a = this;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -49,6 +52,13 @@ public class HomeNotifications extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        refresh_notification_table(getContext(), view);
+    }
+
     private boolean doesUserHaveAtLeastOneDevice() {
         final SharedPreferences aqua_shared_prefs = context.getSharedPreferences("aqua_shared_prefs", context.MODE_PRIVATE);
         java.util.Map<String,?> keys = aqua_shared_prefs.getAll();
@@ -59,5 +69,11 @@ public class HomeNotifications extends Fragment {
             }
         }
         return false;
+    }
+
+    public static void refresh_notification_table(Context context, View view) {
+        TableLayout notif_table = (TableLayout) view.findViewById(R.id.notif_tl);
+        notif_table.removeAllViews();
+        AquaUtil.populateNotificationRows(context, notif_table, "None");
     }
 }

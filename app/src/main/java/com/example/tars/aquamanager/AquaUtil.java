@@ -1,5 +1,6 @@
 package com.example.tars.aquamanager;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -36,6 +37,7 @@ import org.json.JSONObject;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -83,11 +85,19 @@ import java.util.UUID;
         **Geofences**
 
 
-        !geo_MyGeo_settings
+        !geo_MyGeo_settings -- IF GEOTYPE = CIRCLE
             location
-            radius
+            area
+            geotype
+            geodata
             lat
             lon
+
+         !geo_MyGeo_settings -- IF GEOTYPE = POLYGON
+             location
+             area
+             geotype
+             geodata = JSON Array of JSON Objects
 
         **Notifications**
 
@@ -541,6 +551,262 @@ public class AquaUtil {
         return true;
     }
 
+    public static void populateNotificationRows(final Context context, TableLayout layout, final String clickFunction) {
+        final SharedPreferences aqua_shared_prefs = context.getSharedPreferences("aqua_shared_prefs", context.MODE_PRIVATE);
+        java.util.Map<String,?> keys = aqua_shared_prefs.getAll();
+
+        int margin = (int) context.getResources().getDisplayMetrics().density;
+
+        for(java.util.Map.Entry<String,?> entry : keys.entrySet()) {
+            if (entry.getKey().endsWith("tkey")) {
+                String key = entry.getKey();
+                String val = entry.getValue().toString();
+                final String ntf_num = key.substring(5, key.length() - 5);
+
+                String ntf_data_str = aqua_shared_prefs.getString("!ntf_" + ntf_num + "_data", "Not Found");
+
+                try {
+                    JSONObject ntf_data = new JSONObject(ntf_data_str);
+
+                    String ntf_device_name = ntf_data.getString("aquaname");
+                    String ntf_trigger = ntf_data.getString("trigger");
+                    String ntf_alert = ntf_data.getString("alert");
+                    String ntf_target = ntf_data.getString("target");
+
+                    final int device_row_color = ContextCompat.getColor(context, R.color.holoBlueLit);
+
+                    final ImageButton device_settings = new ImageButton(context);
+                    device_settings.setImageResource(R.drawable.settings);
+                    device_settings.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                    device_settings.setBackgroundColor(device_row_color);
+                    device_settings.setPadding(0,0,1,0);
+                    RelativeLayout.LayoutParams nilp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                    nilp.width = (int) convertDpToPixel(32, context);
+                    nilp.height = (int) convertDpToPixel(32, context);
+                    nilp.addRule(RelativeLayout.CENTER_IN_PARENT);
+                    //nilp.setMargins(0,margin,margin,margin);
+                    device_settings.setLayoutParams(nilp);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                        // If we're running on Honeycomb or newer, then we can use the Theme's
+                        // selectableItemBackground to ensure that the View has a pressed state
+                        TypedValue outValue = new TypedValue();
+                        context.getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
+                        device_settings.setBackgroundResource(outValue.resourceId);
+                    }
+
+                    //device_settings.setClickable(true);
+
+                    final RelativeLayout icon_rl = new RelativeLayout(context);
+                    RelativeLayout.LayoutParams icon_rl_lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                    //icon_rl_lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);'
+                    //icon_rl_lp.addRule(RelativeLayout.CENTER_IN_PARENT);
+                    icon_rl.setLayoutParams(icon_rl_lp);
+                    icon_rl_lp.setMargins(0,margin,margin,margin);
+                    //icon_rl.setId(R.id.settings_icon_id);
+                    icon_rl.setBackgroundColor(device_row_color);
+                    icon_rl.addView(device_settings);
+                    //icon_rl.setPadding(0,0,30,0);
+                    //icon_rl.setId(R.id.icon_rl_id);
+
+                    String[] strings={"Settings","Rename","Remove"};
+                    final NDSpinner spinner=new NDSpinner(context);
+                    spinner.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item,strings));
+
+                    spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+                        private int check = 0;
+
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            check=check+1;
+                            if(check > 1) {
+                                String selectedItem = parent.getItemAtPosition(position).toString();
+                                if (selectedItem.equals("Settings")) {
+                                    /*Intent intent=new Intent(Main.context, DeviceSettings.class);
+                                    intent.putExtra("name", name);
+                                    context.startActivity(intent);*/
+                                } else if (selectedItem.equals("Remove")) {
+                                    new AlertDialog.Builder(context)
+                                            .setTitle("Remove entry")
+                                            .setMessage("Are you sure you want to remove this notification?")
+                                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    deleteNotif(ntf_num, aqua_shared_prefs, context);
+                                                    //deleteAqua(name, aqua_shared_prefs);
+                                                    //HomeDevices.refresh_device_table(context, HomeDevices.view);
+                                                }
+                                            })
+                                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+
+                                                }
+                                            })
+                                            .setIcon(android.R.drawable.ic_dialog_alert)
+                                            .show();
+                                } else {
+                                    Toast.makeText(context, "??", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+                            Toast.makeText(context, "nothing", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    icon_rl.addView(spinner);
+                    spinner.setVisibility(Spinner.INVISIBLE);
+
+                    final RelativeLayout icon_rl_rl = new RelativeLayout(context);
+                    RelativeLayout.LayoutParams icon_rl_rl_lp = new RelativeLayout.LayoutParams((int) convertDpToPixel(57, context), (int) convertDpToPixel(72, context));
+                    icon_rl_rl_lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                    icon_rl_rl.setLayoutParams(icon_rl_rl_lp);
+                    icon_rl_rl.setId(R.id.settings_icon_id);
+                    icon_rl_rl.setBackgroundColor(context.getResources().getColor(R.color.holoBlueMidnight));
+                    icon_rl_rl.addView(icon_rl);
+
+
+                    device_settings.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+                            if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                                icon_rl.setBackgroundColor(lighter(device_row_color,(float)0.14));
+
+                            } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                                icon_rl.setBackgroundColor(device_row_color);
+                                spinner.performClick();
+                            }
+                            return true;
+                        }
+                    });
+
+                    final TextView newName = new TextView(context);
+                    TableRow.LayoutParams nnlp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, .45f);
+                    nnlp.setMargins(margin,margin,0,margin);
+                    newName.setLayoutParams(nnlp);
+                    nnlp.width = (0);
+                    newName.setLines(2);
+                    newName.setGravity(Gravity.CENTER);
+                    newName.setBackgroundColor(device_row_color);
+                    newName.setText(ntf_device_name);
+                    newName.setTextColor(Color.WHITE);
+
+                    final TextView newLoc = new TextView(context);
+                    TableRow.LayoutParams nllp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, .355f);
+                    nllp.setMargins(0, margin, 0, margin);
+                    newLoc.setLayoutParams(nllp);
+                    newLoc.setText(ntf_trigger);
+                    nllp.width = (0);
+                    newLoc.setLines(2);
+                    newLoc.setGravity(Gravity.CENTER);
+                    newLoc.setBackgroundColor(device_row_color);
+                    newLoc.setTextColor(Color.WHITE);
+
+                    final TextView newChg = new TextView(context);
+                    TableRow.LayoutParams nclp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, .195f);
+                    nclp.width=(0);
+                    newChg.setGravity(Gravity.CENTER);
+                    nclp.setMargins(0, margin, 0, margin);
+                    newChg.setText(ntf_alert);
+                    newChg.setLines(2);
+                    newChg.setLayoutParams(nclp);
+                    newChg.setBackgroundColor(device_row_color);
+                    newChg.setTextColor(Color.WHITE);
+
+                    TableRow newModuleRow = new TableRow(context);
+                    LinearLayout.LayoutParams lllp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+
+                    newModuleRow.addView(newName,nnlp);
+                    newModuleRow.addView(newLoc, nllp);
+                    newModuleRow.addView(newChg, nclp);
+                    newModuleRow.setLayoutParams(lllp);
+                    newModuleRow.setBackgroundColor(context.getResources().getColor(R.color.holoBlueMidnight));
+
+
+                    final LinearLayout header_ll = new LinearLayout(context);
+                    RelativeLayout.LayoutParams header_ll_lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, (int) convertDpToPixel(72, context));
+                    header_ll_lp.addRule(RelativeLayout.LEFT_OF, R.id.settings_icon_id);
+                    header_ll.setLayoutParams(header_ll_lp);
+                    header_ll.setBackgroundColor(device_row_color);
+                    header_ll.addView(newModuleRow);
+                    header_ll.setClickable(true);
+
+                    ViewGroup parentView = header_ll;
+                    parentView.bringToFront();
+
+                    RelativeLayout row_rl = new RelativeLayout(context);
+                    RelativeLayout.LayoutParams row_lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, (int) convertDpToPixel(72, context));
+                    row_rl.setLayoutParams(row_lp);
+                    row_rl.addView(icon_rl_rl);
+                    row_rl.addView(header_ll);
+
+                    newLoc.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+                            if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                                newLoc.setBackgroundColor(lighter(device_row_color,(float)0.14));
+                                newChg.setBackgroundColor(lighter(device_row_color,(float)0.14));
+                                newName.setBackgroundColor(lighter(device_row_color,(float)0.14));
+                                icon_rl.setBackgroundColor(lighter(device_row_color,(float)0.14));
+                            } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                                newLoc.setBackgroundColor(device_row_color);
+                                newChg.setBackgroundColor(device_row_color);
+                                newName.setBackgroundColor(device_row_color);
+                                icon_rl.setBackgroundColor(device_row_color);
+                                if (clickFunction.equalsIgnoreCase("None")) Toast.makeText(context, "Eye Of Horus", Toast.LENGTH_SHORT).show();
+                            }
+                            return true;
+                        }
+                    });
+
+                    newChg.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+                            if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                                newLoc.setBackgroundColor(lighter(device_row_color,(float)0.14));
+                                newChg.setBackgroundColor(lighter(device_row_color,(float)0.14));
+                                newName.setBackgroundColor(lighter(device_row_color,(float)0.14));
+                                icon_rl.setBackgroundColor(lighter(device_row_color,(float)0.14));
+                            } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                                newLoc.setBackgroundColor(device_row_color);
+                                newChg.setBackgroundColor(device_row_color);
+                                newName.setBackgroundColor(device_row_color);
+                                icon_rl.setBackgroundColor(device_row_color);
+                            }
+                            return true;
+                        }
+                    });
+
+                    newName.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+                            if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                                newLoc.setBackgroundColor(lighter(device_row_color,(float)0.14));
+                                newChg.setBackgroundColor(lighter(device_row_color,(float)0.14));
+                                newName.setBackgroundColor(lighter(device_row_color,(float)0.14));
+                                icon_rl.setBackgroundColor(lighter(device_row_color,(float)0.14));
+                            } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                                newLoc.setBackgroundColor(device_row_color);
+                                newChg.setBackgroundColor(device_row_color);
+                                newName.setBackgroundColor(device_row_color);
+                                icon_rl.setBackgroundColor(device_row_color);
+                            }
+                            return true;
+                        }
+                    });
+
+                    layout.addView(row_rl, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(context, "JSON Exception 105", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
     private static int calcDeviceColor(Context context, JSONArray aqsens_array) {
         if (aqsens_array.length() >= 1) {
             try {
@@ -596,6 +862,63 @@ public class AquaUtil {
         editor.remove("!dev_" + name_to_delete + "_locstr");
         editor.remove("!dev_" + name_to_delete + "_pctbat");
         editor.apply();
+    }
+
+    private static void deleteNotif(final String ntf_num, final SharedPreferences aqua_shared_prefs, final Context context) {
+        String ntfdata = aqua_shared_prefs.getString("!ntf_" + ntf_num + "_data", "Not found");
+        try {
+            JSONObject ntf_data = new JSONObject(ntfdata);
+
+            String ntfuuid = ntf_data.getString("ntfuuid");
+            String ntfdev = ntf_data.getString("aquaname");
+            String iid = aqua_shared_prefs.getString("iid", "Not found");
+
+            JSONObject outgoing_json = new JSONObject();
+            outgoing_json.put("reqtype", "rmntfid");
+            outgoing_json.put("ntfid", ntfuuid);
+            outgoing_json.put("aquaname", ntfdev);
+            outgoing_json.put("iid", iid);
+
+            final Activity activity = (Activity) context;
+
+            new QServerConnect(activity, false, new QServerConnect.AsyncResponse() {
+
+                @Override
+                public void processFinish(String[] output) {
+                    //Here you will receive the result fired from async class
+                    //of onPostExecute(result) method.
+                    if (output[0].equalsIgnoreCase("failed")) {
+                        Toast.makeText(context, "Network Error", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Log.d("ServerResponse", output[0]);
+                        try {
+                            JSONObject response_json = new JSONObject(output[0]);
+
+                            String qresponse = response_json.getString("qresponse");
+
+                            if (qresponse.equalsIgnoreCase("success")) {
+                                Toast.makeText(context, "Notification Successfully Removed", Toast.LENGTH_SHORT).show();
+
+                                aqua_shared_prefs.edit().remove("!ntf_" + ntf_num + "_data").apply();
+                                aqua_shared_prefs.edit().remove("!ntf_" + ntf_num + "_uuid").apply();
+                                aqua_shared_prefs.edit().remove("!ntf_" + ntf_num + "_tkey").apply();
+
+                                HomeNotifications.refresh_notification_table(context, HomeNotifications.view);
+                            } else {
+                                Toast.makeText(context, "Failed to Remove Notification", Toast.LENGTH_SHORT).show();
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }).execute(outgoing_json);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(context, "JSON Exception 106", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private static void deleteGeo(String name_to_delete, SharedPreferences aqua_shared_prefs) {

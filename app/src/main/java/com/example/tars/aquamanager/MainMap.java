@@ -43,6 +43,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
+import com.google.android.gms.maps.model.PolygonOptions;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -321,26 +323,53 @@ public class MainMap extends FragmentActivity implements OnMapReadyCallback {
                 String this_geos_settings = aqua_shared_prefs.getString("!geo_" + name + "_settings", "NotFound");
                 JSONObject settings_obj = new JSONObject(this_geos_settings);
 
-                Double lat = Double.parseDouble(settings_obj.getString("lat"));
-                Double lon = Double.parseDouble(settings_obj.getString("lon"));
+                String geotype_str = settings_obj.getString("geotype");
 
-                Double rad = Double.parseDouble(settings_obj.getString("radius"));
+                if (geotype_str.equalsIgnoreCase("circle")) {
+                    Double lat = Double.parseDouble(settings_obj.getString("lat"));
+                    Double lon = Double.parseDouble(settings_obj.getString("lon"));
 
-                LatLng geocenter = new LatLng(lat, lon);
+                    Double rad = Double.parseDouble(settings_obj.getString("geodata"));
 
-                CircleOptions circleOptions = new CircleOptions()
-                        .center(geocenter)
-                        .radius(rad * 1609.34)
-                        .fillColor(0x7082BEF4)
-                        .strokeColor(Color.TRANSPARENT)
-                        .strokeWidth(2);
+                    LatLng geocenter = new LatLng(lat, lon);
 
-                mMap.addCircle(circleOptions);
+                    CircleOptions circleOptions = new CircleOptions()
+                            .center(geocenter)
+                            .radius(rad * 1609.34)
+                            .fillColor(0x7082BEF4)
+                            .strokeColor(Color.TRANSPARENT)
+                            .strokeWidth(2);
 
-                LatLng markerSpot = new LatLng(lat, lon);
-                Marker marker = mMap.addMarker(new MarkerOptions().position(markerSpot).title(name).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("flagc", (int) convertDpToPixel(70, this), (int) convertDpToPixel(49, this)))));
+                    mMap.addCircle(circleOptions);
 
-                markers.add(marker);
+                    LatLng markerSpot = new LatLng(lat, lon);
+                    Marker marker = mMap.addMarker(new MarkerOptions().position(markerSpot).title(name).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("flagc", (int) convertDpToPixel(70, this), (int) convertDpToPixel(49, this)))));
+
+                    markers.add(marker);
+                } else if (geotype_str.equalsIgnoreCase("polygon")) {
+
+                    Polygon polygon;
+                    List<LatLng> box_latlngs = new ArrayList<>();
+
+                    JSONArray latlng_array = new JSONArray(settings_obj.getString("geodata"));
+
+                    for (int i = 0; i<latlng_array.length(); i++) {
+                        JSONObject latlng_obj = latlng_array.getJSONObject(i);
+                        String lat = latlng_obj.getString("lat");
+                        String lon = latlng_obj.getString("lon");
+                        LatLng ll = new LatLng(Double.parseDouble(lat), Double.parseDouble(lon));
+                        box_latlngs.add(i, ll);
+                    }
+
+                    PolygonOptions rectOptions = new PolygonOptions().addAll(box_latlngs);
+
+                    polygon = mMap.addPolygon(rectOptions);
+                    polygon.setStrokeColor(R.color.holoBlue);
+                    polygon.setFillColor(R.color.holoBlueLitTransparent);
+                } else {
+                    Toast.makeText(this, "Geofence Corrupted", Toast.LENGTH_SHORT).show();
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
                 Toast.makeText(this, "Geo JSON Error", Toast.LENGTH_SHORT).show();

@@ -37,16 +37,19 @@ public class QServerConnect extends AsyncTask<JSONObject, JSONObject, String[]> 
 
     static HttpURLConnection urlConnection;
 
+    private boolean needLocation = false;
+
     public interface AsyncResponse {
         void processFinish(String[] output);
     }
 
     public AsyncResponse delegate = null;
 
-    public QServerConnect(Activity context, AsyncResponse delegate) {
+    public QServerConnect(Activity context, boolean needloc, AsyncResponse delegate) {
         mContext = context;
         mDialog = new ProgressDialog(context);
         this.delegate = delegate;
+        needLocation = needloc;
     }
 
     protected void onPreExecute() {
@@ -94,44 +97,47 @@ public class QServerConnect extends AsyncTask<JSONObject, JSONObject, String[]> 
 
             String pct_batt = "N/A";
 
-            try {
+            if(needLocation) {
 
-                JSONObject dummy = new JSONObject(response);
-                String aqsens_str = dummy.getString("aqsens");
+                try {
 
-                Log.d("Tag", aqsens_str);
+                    JSONObject dummy = new JSONObject(response);
+                    String aqsens_str = dummy.getString("aqsens");
 
-                JSONArray aqsens_obj = new JSONArray(aqsens_str);
+                    Log.d("Tag", aqsens_str);
 
-                JSONObject latest_element = aqsens_obj.getJSONObject(0);
-                JSONObject latest_gps_minimum = latest_element.getJSONObject("gpsminimum");
-                JSONObject sensors = latest_element.getJSONObject("sensors");
+                    JSONArray aqsens_obj = new JSONArray(aqsens_str);
 
-                pct_batt = sensors.getString("pct_battery");
+                    JSONObject latest_element = aqsens_obj.getJSONObject(0);
+                    JSONObject latest_gps_minimum = latest_element.getJSONObject("gpsminimum");
+                    JSONObject sensors = latest_element.getJSONObject("sensors");
 
-                String latest_lon = latest_gps_minimum.getString("lon");
-                String latest_lat = latest_gps_minimum.getString("lat");
+                    pct_batt = sensors.getString("pct_battery");
 
-                Double lon = Double.parseDouble(latest_lon);
-                Double lat = Double.parseDouble(latest_lat);
+                    String latest_lon = latest_gps_minimum.getString("lon");
+                    String latest_lat = latest_gps_minimum.getString("lat");
+
+                    Double lon = Double.parseDouble(latest_lon);
+                    Double lat = Double.parseDouble(latest_lat);
 
 
-                JSONObject ret = getLocation(lat, lon);
-                JSONObject location;
-                String location_string = "";
+                    JSONObject ret = getLocation(lat, lon);
+                    JSONObject location;
+                    String location_string = "";
 
-                location = ret.getJSONArray("results").getJSONObject(2);
-                location_string = location.getString("formatted_address");
-                Log.d("test", "formatted address:" + location_string);
+                    location = ret.getJSONArray("results").getJSONObject(2);
+                    location_string = location.getString("formatted_address");
+                    Log.d("test", "formatted address:" + location_string);
 
-                String[] retu = {response, location_string, pct_batt};
+                    String[] retu = {response, location_string, pct_batt};
 
-                return retu;
+                    return retu;
 
-            } catch (Exception e) {
-                e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             }
-
             String[] retu = {response, "<no data>", pct_batt};
             return retu;
 

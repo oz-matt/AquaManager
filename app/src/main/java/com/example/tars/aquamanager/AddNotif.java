@@ -134,45 +134,55 @@ public class AddNotif extends Activity {
                             outgoing_json.put("aquakey", aquakey);
                             outgoing_json.put("data", notif_data);
 
-                            new QServerConnect(a, new QServerConnect.AsyncResponse() {
+                            new QServerConnect(a, false, new QServerConnect.AsyncResponse() {
 
                                 @Override
                                 public void processFinish(String[] output) {
+                                    Log.d("ServerResponse", output[0]);
                                     //Here you will receive the result fired from async class
                                     //of onPostExecute(result) method.
                                     if (output[0].equalsIgnoreCase("failed")) {
                                         Toast.makeText(getBaseContext(), "Network Error", Toast.LENGTH_SHORT).show();
                                     } else {
-                                        Log.d("ServerResponse", output[0]);
                                         try {
                                             JSONObject response_json = new JSONObject(output[0]);
-
                                             String qresponse = response_json.getString("qresponse");
 
-                                            if (qresponse.equalsIgnoreCase("success")) {
+                                            if (qresponse.equalsIgnoreCase("Full")) {
+                                                new AlertDialog.Builder(a)
+                                                    .setTitle("Device Full")
+                                                    .setMessage("The maximum number of notifications has been reached for this device. Some notifications must be deleted before more can be added.")
+                                                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog, int which) {
+
+                                                        }
+                                                    })
+                                                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog, int which) {
+
+                                                        }
+                                                    })
+                                                    .show();
+                                            } else if (qresponse.equalsIgnoreCase("Success")) {
                                                 Toast.makeText(getBaseContext(), "Notification Successfully Added", Toast.LENGTH_SHORT).show();
 
                                                 Integer num_notifs = aqua_shared_prefs.getInt("num_notifs", -1);
 
-                                                if (num_notifs < 0) Toast.makeText(getBaseContext(), "Notification Error 101", Toast.LENGTH_SHORT).show();
+                                                if (num_notifs < 0) {
+                                                    Toast.makeText(getBaseContext(), "Notification Error 101", Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    num_notifs++;
 
-                                                num_notifs++;
+                                                    aqua_shared_prefs.edit().putString("!ntf_" + String.valueOf(num_notifs) + "_tkey", aquakey).apply();
+                                                    aqua_shared_prefs.edit().putString("!ntf_" + String.valueOf(num_notifs) + "_uuid", uuid).apply();
+                                                    aqua_shared_prefs.edit().putString("!ntf_" + String.valueOf(num_notifs) + "_data", notif_data.toString()).apply();
+                                                    aqua_shared_prefs.edit().putInt("num_notifs", num_notifs).apply();
 
-                                                aqua_shared_prefs.edit().putString("!ntf_" + String.valueOf(num_notifs) + "_tkey", aquakey).apply();
-                                                aqua_shared_prefs.edit().putString("!ntf_" + String.valueOf(num_notifs) + "_uuid", uuid).apply();
-                                                aqua_shared_prefs.edit().putString("!ntf_" + String.valueOf(num_notifs) + "_data", notif_data.toString()).apply();
-
-                                                Map<String,?> keys = aqua_shared_prefs.getAll();
-
-                                                for(Map.Entry<String,?> entry : keys.entrySet()){
-                                                    Log.d("map valuez",entry.getKey() + ": " +
-                                                            entry.getValue().toString());
+                                                    finish();
                                                 }
-
-                                                finish();
-
                                             } else {
-                                                Toast.makeText(getBaseContext(), "Authentication Failed", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(getBaseContext(), "Unknown Failure 202", Toast.LENGTH_SHORT).show();
+                                                finish();
                                             }
 
                                         } catch (Exception e) {
@@ -224,7 +234,9 @@ public class AddNotif extends Activity {
         String trg_buf;
 
         if (trig.isEmpty()) triggerType = "Unk";
-        else if (trig.startsWith("enter")) {
+        else if (trig.startsWith("low")) {
+            triggerType = "lowBattery";
+        } else if (trig.startsWith("enter")) {
             triggerType = "entersGeo";
             String[] chop = trig.split(" ");
             geo = chop[1].substring(1, chop[1].length() - 1);

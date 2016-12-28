@@ -3,6 +3,7 @@ package com.example.tars.aquamanager;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Activity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,7 +11,11 @@ import android.widget.Toast;
 
 import org.json.JSONObject;
 
+import java.util.Map;
+
 public class RemoveNotifFromID extends Activity {
+
+    private Activity a = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,8 +30,8 @@ public class RemoveNotifFromID extends Activity {
         final EditText et_id = (EditText) findViewById(R.id.enter_id);
         final EditText et_name = (EditText) findViewById(R.id.enter_dev);
 
-        et_id.setHint("MyID");
-        et_name.setHint("MyAqua");
+        et_id.setHint("Notification ID");
+        et_name.setHint("Device Name");
 
         btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,9 +60,42 @@ public class RemoveNotifFromID extends Activity {
                         outgoing_json.put("ntfid", ntfid);
                         outgoing_json.put("aquaname", aquaname);
 
+                        new QServerConnect(a, false, new QServerConnect.AsyncResponse() {
+
+                            @Override
+                            public void processFinish(String[] output) {
+                                //Here you will receive the result fired from async class
+                                //of onPostExecute(result) method.
+                                if (output[0].equalsIgnoreCase("failed")) {
+                                    Toast.makeText(getBaseContext(), "Network Error", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Log.d("ServerResponse", output[0]);
+                                    try {
+                                        JSONObject response_json = new JSONObject(output[0]);
+
+                                        String qresponse = response_json.getString("qresponse");
+
+                                        if (qresponse.equalsIgnoreCase("success")) {
+
+                                            Toast.makeText(getBaseContext(), "Notification Successfully Removed", Toast.LENGTH_SHORT).show();
+
+                                            finish();
+
+                                        } else {
+                                            Toast.makeText(getBaseContext(), "Authentication Failed", Toast.LENGTH_SHORT).show();
+                                        }
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(getBaseContext(), "JSON Exception 102", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }
+                        }).execute(outgoing_json);
+
                     } catch (Exception e){
                         e.printStackTrace();
-                        Toast.makeText(getBaseContext(), "JSON Exception", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getBaseContext(), "JSON Exception 103", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
