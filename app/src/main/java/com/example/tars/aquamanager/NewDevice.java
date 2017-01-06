@@ -3,6 +3,8 @@ package com.example.tars.aquamanager;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -41,6 +43,21 @@ public class NewDevice extends Activity {
         Button cancelButton = (Button) findViewById(R.id.cancel_button);
 
         final EditText name_edit = (EditText) findViewById(R.id.name_edit);
+
+        InputFilter filter = new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end,
+                                       Spanned dest, int dstart, int dend) {
+                for (int i = start; i < end; i++) {
+                    if (!Character.isLetterOrDigit(source.charAt(i))) {
+                        return "";
+                    }
+                }
+                return null;
+            }
+        };
+
+        name_edit.setFilters(new InputFilter[]{filter});
 
         if(!getIntent().hasExtra("qdata")) {
             Toast.makeText(getBaseContext(), "Error: No data", Toast.LENGTH_SHORT).show();
@@ -81,6 +98,8 @@ public class NewDevice extends Activity {
                         String qdata = getIntent().getStringExtra("qdata");
                         String aqsens = getIntent().getStringExtra("aqsens");
                         String loc = getIntent().getStringExtra("loc");
+                        String fullsettings = getIntent().getStringExtra("fullsettings");
+                        String prevloclong = getIntent().getStringExtra("prevloclong");
                         String batt = getIntent().getStringExtra("batt");
 
                         Log.d("set", settings_str);
@@ -88,6 +107,8 @@ public class NewDevice extends Activity {
                         aqua_shared_prefs.edit().putString("!dev_" + name + "_qdata", qdata).apply();
                         aqua_shared_prefs.edit().putString("!dev_" + name + "_aqsens", aqsens).apply();
                         aqua_shared_prefs.edit().putString("!dev_" + name + "_locstr", loc).apply();
+                        aqua_shared_prefs.edit().putString("!dev_" + name + "_fullsettings", fullsettings).apply();
+                        aqua_shared_prefs.edit().putString("!dev_" + name + "_prevlocstrlong", prevloclong).apply();
                         aqua_shared_prefs.edit().putString("!dev_" + name + "_pctbat", batt).apply();
                         aqua_shared_prefs.edit().putString("!dev_" + name + "_settings", settings_str).apply();
 

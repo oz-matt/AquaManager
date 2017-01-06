@@ -3,11 +3,14 @@ package com.example.tars.aquamanager;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -15,13 +18,16 @@ import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseBooleanArray;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,10 +55,13 @@ import com.google.android.gms.maps.model.PolygonOptions;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
-public class MainMap extends FragmentActivity implements OnMapReadyCallback {
+public class MainMap extends FragmentActivity implements OnMapReadyCallback, GoogleMap.InfoWindowAdapter {
 
     private GoogleMap mMap;
     ArrayList<String> devs_to_populate = new ArrayList<>();
@@ -104,6 +113,26 @@ public class MainMap extends FragmentActivity implements OnMapReadyCallback {
     public void onMapReady(final GoogleMap googleMap) {
         mMap = googleMap;
 
+        mMap.setInfoWindowAdapter(this);
+
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                String[] full_marker_data = marker.getTitle().split("@");
+
+                String aqsen_pref = full_marker_data[4];
+                String aqsen_ele = full_marker_data[5];
+
+                Log.d("Mydata7", aqsen_pref);
+                Log.d("Mydata8", aqsen_ele);
+
+                Intent intent = new Intent(mContext, ViewRawData.class);
+                intent.putExtra("aqsens_pref", aqsen_pref);
+                intent.putExtra("aqsens_ele", Integer.parseInt(aqsen_ele));
+                mContext.startActivity(intent);
+            }
+        });
+
         final SharedPreferences aqua_shared_prefs = this.getSharedPreferences("aqua_shared_prefs", this.MODE_PRIVATE);
 
         int terrain_type = aqua_shared_prefs.getInt("!set_mapDisplayType", 0);
@@ -151,11 +180,11 @@ public class MainMap extends FragmentActivity implements OnMapReadyCallback {
 
                 String this_geos_settings = aqua_shared_prefs.getString("!geo_" + geo + "_settings", "NotFound");
                 JSONObject settings_obj = new JSONObject(this_geos_settings);
-                Float rad = Float.parseFloat(settings_obj.getString("radius"));
+                Double rad = (Math.sqrt(Math.sqrt(Double.parseDouble(settings_obj.getString("area")))))*2;
 
                 addSingleGeofenceToGeos_To_PopulateList(geo);
                 populateMarkersForGeofencesInGeos_To_PopulateList();
-                ZoomToFitMarkers(rad);
+                ZoomToFitMarkers(rad.floatValue());
             } catch (Exception e) {
                 e.printStackTrace();
                 Toast.makeText(this, "Geo Parse Failure", Toast.LENGTH_SHORT).show();
@@ -204,11 +233,19 @@ public class MainMap extends FragmentActivity implements OnMapReadyCallback {
                     final List<String> temp_array_of_devs = new ArrayList<>();
                     List<Boolean> temp_array_of_dev_booleans = new ArrayList<>();
 
+                    final List<String> temp_array_of_geos = new ArrayList<>();
+                    final List<String> temp_array_of_geos_fake = new ArrayList<>();
+                    List<Boolean> temp_array_of_geo_booleans = new ArrayList<>();
+
+                    int num_devs = 0;
+
                     for (java.util.Map.Entry<String, ?> entry : keys.entrySet()) {
                         String key = entry.getKey();
                         if (key.endsWith("qdata")) {
                             String name = key.substring(5, key.length() - 6);
                             temp_array_of_devs.add(name);
+
+                            num_devs++;
 
                             boolean is_in_devs_to_populate = false;
 
@@ -218,19 +255,43 @@ public class MainMap extends FragmentActivity implements OnMapReadyCallback {
                                 }
                             }
                             temp_array_of_dev_booleans.add(is_in_devs_to_populate);
+                        } else if (key.startsWith("!geo_") && key.endsWith("_settings")) {
+                            String geo_name = key.substring(5, key.length() - 9);
+                            temp_array_of_geos.add(geo_name);
+                            temp_array_of_geos_fake.add(geo_name + " (Geofence)");
+
+                            boolean is_in_geos_to_populate = false;
+
+                            for (String temp : geos_to_populate) {
+                                if (temp.equalsIgnoreCase(geo_name)) {
+                                    is_in_geos_to_populate = true;
+                                }
+                            }
+                            temp_array_of_geo_booleans.add(is_in_geos_to_populate);
                         }
                     }
 
-                    CharSequence[] items = temp_array_of_devs.toArray(new CharSequence[0]);
-                    boolean[] isChecked = new boolean[temp_array_of_dev_booleans.size()];
-                    for (int i = 0; i < temp_array_of_dev_booleans.size(); i++) {
-                        isChecked[i] = temp_array_of_dev_booleans.get(i);
+                    final List<String> temp_array_of_all = new ArrayList<>();
+                    final List<String> temp_array_of_all_fake = new ArrayList<>();
+                    List<Boolean> temp_array_of_all_booleans = new ArrayList<>();
+
+                    temp_array_of_all.addAll(temp_array_of_devs);
+                    temp_array_of_all.addAll(temp_array_of_geos);
+                    temp_array_of_all_fake.addAll(temp_array_of_devs);
+                    temp_array_of_all_fake.addAll(temp_array_of_geos_fake);
+                    temp_array_of_all_booleans.addAll(temp_array_of_dev_booleans);
+                    temp_array_of_all_booleans.addAll(temp_array_of_geo_booleans);
+
+                    CharSequence[] items = temp_array_of_all_fake.toArray(new CharSequence[0]);
+                    boolean[] isChecked = new boolean[temp_array_of_all_booleans.size()];
+                    for (int i = 0; i < temp_array_of_all_booleans.size(); i++) {
+                        isChecked[i] = temp_array_of_all_booleans.get(i);
                     }
                     final ArrayList selectedItems = new ArrayList();
 
-                    if (temp_array_of_devs.isEmpty()) {
+                    if (temp_array_of_all.isEmpty()) {
                         AlertDialog dialog = new AlertDialog.Builder(mContext)
-                                .setTitle("No Devices To Add")
+                                .setTitle("No Devices Or Geofences To Add")
                                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int id) {
@@ -239,8 +300,10 @@ public class MainMap extends FragmentActivity implements OnMapReadyCallback {
                         dialog.show();
                     } else {
 
+                        final int nd = num_devs;
+
                         dialog = new AlertDialog.Builder(mContext)
-                                .setTitle("Select Devices To Display")
+                                .setTitle("Select Devices And Geofences To Display")
                                 .setMultiChoiceItems(items, isChecked, new DialogInterface.OnMultiChoiceClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
@@ -261,7 +324,7 @@ public class MainMap extends FragmentActivity implements OnMapReadyCallback {
                                         //  Your code when user clicked on OK
                                         //  You can write the code  to save the selected item here
                                         //Log.d("DeK", selectedItems.toString());
-                                        getCheckedNamesAndRepopulateDevs_To_Populate(temp_array_of_devs);
+                                        getCheckedNamesAndRepopulateBothDevsAndGeos_To_Populate(temp_array_of_all, nd);
 
                                     }
                                 }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -296,13 +359,22 @@ public class MainMap extends FragmentActivity implements OnMapReadyCallback {
                 for (int i = 0; i < aqsens_json_array.length(); i++) {
                     JSONObject this_aqsens_element = aqsens_json_array.getJSONObject(i);
                     JSONObject this_elements_gpsminimum = this_aqsens_element.getJSONObject("gpsminimum");
+                    JSONObject this_elements_sensors = this_aqsens_element.getJSONObject("sensors");
                     Double lat = Double.parseDouble(this_elements_gpsminimum.getString("lat"));
                     Double lon = Double.parseDouble(this_elements_gpsminimum.getString("lon"));
 
-                    String date = this_aqsens_element.getString("datetime");
+                    String datetime = this_elements_gpsminimum.getString("time");
+                    String speed = this_elements_gpsminimum.getString("gspeed");
+                    String numsat = this_elements_gpsminimum.getString("numsat");
+                    String batt = this_elements_sensors.getString("pct_battery");
+
+                    String aqsens_pref = "!dev_" + name + "_aqsens";
+                    String aqsens_ele = String.valueOf(i);
+
+                    String full_marker_data = datetime + "@" + speed + "@" + numsat + "@" + batt + "@" + aqsens_pref + "@" + aqsens_ele;
 
                     LatLng markerSpot = new LatLng(lat, lon);
-                    Marker marker = mMap.addMarker(new MarkerOptions().position(markerSpot).title(date).snippet("Going x mph").icon(BitmapDescriptorFactory.defaultMarker(getMarkerColor(this_devices_marker_color))));
+                    Marker marker = mMap.addMarker(new MarkerOptions().position(markerSpot).title(full_marker_data).snippet("Going x mph").icon(BitmapDescriptorFactory.defaultMarker(getMarkerColor(this_devices_marker_color))));
                     float step = (0.7f) / (aqsens_json_array.length());
                     marker.setAlpha(1 - (step * i));
                     markers.add(marker);
@@ -336,14 +408,14 @@ public class MainMap extends FragmentActivity implements OnMapReadyCallback {
                     CircleOptions circleOptions = new CircleOptions()
                             .center(geocenter)
                             .radius(rad * 1609.34)
-                            .fillColor(0x7082BEF4)
-                            .strokeColor(Color.TRANSPARENT)
-                            .strokeWidth(2);
+                            .fillColor(0x4a65a3da)
+                            .strokeColor(0xe22f4253)
+                            .strokeWidth(4);
 
                     mMap.addCircle(circleOptions);
 
                     LatLng markerSpot = new LatLng(lat, lon);
-                    Marker marker = mMap.addMarker(new MarkerOptions().position(markerSpot).title(name).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("flagc", (int) convertDpToPixel(70, this), (int) convertDpToPixel(49, this)))));
+                    Marker marker = mMap.addMarker(new MarkerOptions().position(markerSpot).title(name).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("flagd", (int) convertDpToPixel(70, this), (int) convertDpToPixel(49, this)))));
 
                     markers.add(marker);
                 } else if (geotype_str.equalsIgnoreCase("polygon")) {
@@ -364,8 +436,17 @@ public class MainMap extends FragmentActivity implements OnMapReadyCallback {
                     PolygonOptions rectOptions = new PolygonOptions().addAll(box_latlngs);
 
                     polygon = mMap.addPolygon(rectOptions);
-                    polygon.setStrokeColor(R.color.holoBlue);
-                    polygon.setFillColor(R.color.holoBlueLitTransparent);
+                    polygon.setStrokeColor(0xe22f4253);
+                    polygon.setFillColor(0x4a65a3da);
+                    polygon.setStrokeWidth(4);
+
+                    Double lat = Double.parseDouble(settings_obj.getString("lat"));
+                    Double lon = Double.parseDouble(settings_obj.getString("lon"));
+
+                    LatLng markerSpot = new LatLng(lat, lon);
+                    Marker marker = mMap.addMarker(new MarkerOptions().position(markerSpot).title("Geofence: '" + name + "'").icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("flagd", (int) convertDpToPixel(70, this), (int) convertDpToPixel(49, this)))));
+
+                    markers.add(marker);
                 } else {
                     Toast.makeText(this, "Geofence Corrupted", Toast.LENGTH_SHORT).show();
                 }
@@ -467,23 +548,32 @@ public class MainMap extends FragmentActivity implements OnMapReadyCallback {
         return px;
     }
 
-    private void getCheckedNamesAndRepopulateDevs_To_Populate(List<String> devlist) {
+    private void getCheckedNamesAndRepopulateBothDevsAndGeos_To_Populate(List<String> devlist, int total_num_devs) {
+
         SparseBooleanArray sba = dialog.getListView().getCheckedItemPositions();
-        Log.d("DeG", sba.toString());
-        Log.d("DeG2", devlist.toString());
 
         if (!devs_to_populate.isEmpty()) devs_to_populate.clear();
+        if (!geos_to_populate.isEmpty()) geos_to_populate.clear();
 
         int i = 0;
 
         for (String temp : devlist) {
-            if (sba.get(i++)) devs_to_populate.add(temp);
+            if (sba.get(i)) {
+                if (i < (total_num_devs)) {
+                    devs_to_populate.add(temp);
+                } else {
+                    //geos_to_populate.add(temp.substring(0,temp.length()-11));
+                    geos_to_populate.add(temp);
+                }
+            }
+            i++;
         }
 
         mMap.clear();
         markers.clear();
 
         populateMarkersForDevicesInDevs_To_PopulateList();
+        populateMarkersForGeofencesInGeos_To_PopulateList();
     }
 
     private float getMarkerColor(String color) {
@@ -546,4 +636,137 @@ public class MainMap extends FragmentActivity implements OnMapReadyCallback {
         AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();
     }
+
+    @Override
+    public View getInfoWindow(Marker marker) {
+        return null;
+        //return prepareInfoView(marker);
+    }
+
+    @Override
+    public View getInfoContents(Marker marker) {
+        //return null;
+        return prepareInfoView(marker);
+
+    }
+
+    private View prepareInfoView(Marker marker){
+
+        String title = marker.getTitle();
+
+        if (title.contains("@")) {
+
+            //prepare InfoView programmatically
+            LinearLayout infoView = new LinearLayout(MainMap.this);
+            LinearLayout.LayoutParams infoViewParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            infoView.setOrientation(LinearLayout.HORIZONTAL);
+            infoView.setLayoutParams(infoViewParams);
+
+            ImageButton infoImageView = new ImageButton(MainMap.this);
+            //Drawable drawable = getResources().getDrawable(R.mipmap.ic_launcher);
+            LinearLayout.LayoutParams btnParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
+            //btnParams.addRule(RelativeLayout.CENTER_VERTICAL);
+            infoImageView.setLayoutParams(btnParams);
+            infoImageView.setBackgroundColor(getResources().getColor(R.color.white));
+            Drawable drawable = getResources().getDrawable(R.drawable.paper_blu);
+            Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+            Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, (int) AquaUtil.convertDpToPixel(35, mContext), (int) AquaUtil.convertDpToPixel(35, mContext), true));
+            infoImageView.setImageDrawable(d);
+            infoImageView.setPadding(0, 0, 8, 0);
+
+
+            infoImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(mContext, "click!", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            RelativeLayout rl = new RelativeLayout(MainMap.this);
+            RelativeLayout.LayoutParams rlParams = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+            rlParams.addRule(RelativeLayout.CENTER_VERTICAL);
+            rl.setLayoutParams(rlParams);
+
+            rl.addView(infoImageView);
+
+            infoView.addView(rl);
+
+            RelativeLayout vw = new RelativeLayout(MainMap.this);
+            //vw.setGravity(Gravity.CENTER_VERTICAL);
+            vw.setBackgroundColor(getResources().getColor(R.color.holoBlueDark));
+            RelativeLayout.LayoutParams row_lp = new RelativeLayout.LayoutParams(4, RelativeLayout.LayoutParams.MATCH_PARENT);
+            row_lp.addRule(RelativeLayout.CENTER_VERTICAL);
+            vw.setPadding(0, 7, 4, 0);
+            infoView.addView(vw, row_lp);
+
+            LinearLayout subInfoView = new LinearLayout(MainMap.this);
+            LinearLayout.LayoutParams subInfoViewParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            subInfoView.setOrientation(LinearLayout.VERTICAL);
+            subInfoView.setLayoutParams(subInfoViewParams);
+
+            String[] full_marker_data = marker.getTitle().split("@");
+
+            String datetime_str_un = full_marker_data[0];
+            String datetime_str_editted = datetime_str_un.split("\\.")[0] + "Z";
+            String speed = full_marker_data[1];
+            String numsat = full_marker_data[2];
+            String batt = full_marker_data[3];
+
+            SimpleDateFormat dfp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            dfp.setTimeZone(TimeZone.getTimeZone("GMT"));
+
+            String try_time_str = "<no data>";
+
+            Log.d("Mydata4", marker.getTitle());
+            Log.d("Mydata1", datetime_str_un);
+            Log.d("Mydata", datetime_str_editted);
+
+            try {
+                Date formatted_date = dfp.parse(datetime_str_editted);
+                try_time_str = formatted_date.toString();
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(mContext, "Date Parse Error 102", Toast.LENGTH_SHORT).show();
+            }
+            TextView subInfo1 = new TextView(MainMap.this);
+            subInfo1.setText(try_time_str);
+            subInfo1.setTextColor(getResources().getColor(R.color.holoBlueDark));
+            TextView subInfo2 = new TextView(MainMap.this);
+            subInfo2.setText("Going " + speed + "mph");
+            subInfo2.setTextColor(getResources().getColor(R.color.holoBlueDark));
+            subInfo2.setPadding(8, 0, 0, 0);
+            subInfo1.setPadding(8, 0, 0, 0);
+
+            TextView subInfo3 = new TextView(MainMap.this);
+            subInfo3.setText(numsat + " satellites in view");
+            subInfo3.setTextColor(getResources().getColor(R.color.holoBlueDark));
+            subInfo3.setPadding(8, 0, 0, 0);
+
+            TextView subInfo4 = new TextView(MainMap.this);
+            subInfo4.setText(batt + "% battery");
+            subInfo4.setTextColor(getResources().getColor(R.color.holoBlueDark));
+            subInfo4.setPadding(8, 0, 0, 0);
+
+            subInfoView.addView(subInfo1);
+            subInfoView.addView(subInfo2);
+            subInfoView.addView(subInfo3);
+            subInfoView.addView(subInfo4);
+
+            infoView.addView(subInfoView);
+
+            return infoView;
+
+        } else {
+            TextView geotv = new TextView(MainMap.this);
+            geotv.setText("Geofence: '" + title + "'");
+            geotv.setTextColor(getResources().getColor(R.color.holoBlueDark));
+
+            return geotv;
+        }
+    }
+
 }

@@ -120,7 +120,16 @@
             android:name=".RemoveNotifFromID"
             android:label="Enter ID and Device Name"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo.Dialog"/>
+            android:theme="@android:style/Theme.Holo.Dialog" />
+        <activity
+            android:name=".NotifSettings"
+            android:label="@string/title_activity_notif_settings" />
+        <activity
+            android:name=".DeviceRawData"
+            android:label="@string/title_activity_device_raw_data" />
+        <activity
+            android:name=".ViewRawData"
+            android:label="@string/title_activity_view_raw_data"></activity>
     </application>
 
 </manifest>

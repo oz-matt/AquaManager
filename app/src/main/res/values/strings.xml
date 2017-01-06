@@ -95,4 +95,7 @@
     <string name="title_activity_add_notif_select_mac">Enter Mac Address</string>
     <string name="title_activity_add_notif_select_alarm">AddNotifSelectAlarm</string>
     <string name="title_activity_remove_notif_from_id">RemoveNotifFromID</string>
+    <string name="title_activity_notif_settings">NotifSettings</string>
+    <string name="title_activity_device_raw_data">DeviceRawData</string>
+    <string name="title_activity_view_raw_data">ViewRawData</string>
 </resources>

@@ -191,14 +191,14 @@ public class GeofenceMap extends FragmentActivity implements OnMapReadyCallback,
         CircleOptions circleOptions = new CircleOptions()
                 .center(geocenter)
                 .radius(rad * 1609.34)
-                .fillColor(0x7082BEF4)
-                .strokeColor(Color.TRANSPARENT)
-                .strokeWidth(2);
+                .fillColor(0x4a65a3da)
+                .strokeColor(0xe22f4253)
+                .strokeWidth(4);
 
         mMap.clear();
 
         MarkerOptions markeroptions = new MarkerOptions().position(geocenter)
-                .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("flagc",(int) convertDpToPixel(70, context),(int) convertDpToPixel(49, context))))
+                .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("flagd",(int) convertDpToPixel(70, context),(int) convertDpToPixel(49, context))))
                 .title(name);
         flagmarker = mMap.addMarker(markeroptions);
         flagmarker.showInfoWindow();
@@ -281,7 +281,7 @@ public class GeofenceMap extends FragmentActivity implements OnMapReadyCallback,
         mMap.clear();
 
         MarkerOptions markeroptions = new MarkerOptions().position(geocenter)
-                .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("flagc",(int) convertDpToPixel(70, context),(int) convertDpToPixel(49, context))))
+                .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("flagd",(int) convertDpToPixel(70, context),(int) convertDpToPixel(49, context))))
                 .title(name);
         flagmarker = mMap.addMarker(markeroptions);
         flagmarker.showInfoWindow();
@@ -316,8 +316,9 @@ public class GeofenceMap extends FragmentActivity implements OnMapReadyCallback,
         PolygonOptions rectOptions = new PolygonOptions().addAll(box_latlngs);
 
         polygon = mMap.addPolygon(rectOptions);
-        polygon.setStrokeColor(R.color.holoBlue);
-        polygon.setFillColor(R.color.holoBlueLitTransparent);
+        polygon.setStrokeColor(0xe22f4253);
+        polygon.setStrokeWidth(4);
+        polygon.setFillColor(0x4a65a3da);
         tab_ll.removeAllViews();
 
         TextView isgeofencegood = new TextView(context);
@@ -370,8 +371,8 @@ public class GeofenceMap extends FragmentActivity implements OnMapReadyCallback,
             @Override
             public void onClick(View v) {
 
-                String lat = String.valueOf(geocenter.latitude);
-                String lon = String.valueOf(geocenter.longitude);
+                String lat = String.valueOf(flagmarker.getPosition().latitude);
+                String lon = String.valueOf(flagmarker.getPosition().longitude);
 
                 Double area_d = (calculateAreaOfGPSPolygonOnEarthInSquareMeters(box_latlngs))/(2.59e6);
                 Integer area = area_d.intValue();
@@ -458,7 +459,7 @@ public class GeofenceMap extends FragmentActivity implements OnMapReadyCallback,
 
         int current_marker_id = marker_ids.indexOf(arg0.getId());
 
-        polygon.setFillColor(R.color.holoBlueLitTransparent);
+        polygon.setFillColor(0x4a65a3da);
 
         for (int i = 0 ; i < 8; i++) {
             if (i == current_marker_id) {

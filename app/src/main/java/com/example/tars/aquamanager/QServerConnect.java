@@ -24,6 +24,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -95,7 +98,7 @@ public class QServerConnect extends AsyncTask<JSONObject, JSONObject, String[]> 
             is.close();
             os.close();
 
-            String pct_batt = "N/A";
+            String pct_batt = "<no data>";
 
             if(needLocation) {
 
@@ -109,10 +112,36 @@ public class QServerConnect extends AsyncTask<JSONObject, JSONObject, String[]> 
                     JSONArray aqsens_obj = new JSONArray(aqsens_str);
 
                     JSONObject latest_element = aqsens_obj.getJSONObject(0);
+
                     JSONObject latest_gps_minimum = latest_element.getJSONObject("gpsminimum");
                     JSONObject sensors = latest_element.getJSONObject("sensors");
 
+                    String temp = "<no data>";
+                    String humidity = "<no data>";
+
+                    String height = "<no data>";
+                    String speed = "<no data>";
+                    String direction = "<no data>";
+                    String nums = "<no data>";
+                    String latest_time = "<no data>";
+                    String second_latest_time = "<no data>";
+
                     pct_batt = sensors.getString("pct_battery");
+                    temp = sensors.getString("temperature");
+                    humidity = sensors.getString("humidity");
+
+                    height = latest_gps_minimum.getString("height");
+                    speed = latest_gps_minimum.getString("gspeed");
+                    direction = latest_gps_minimum.getString("direction");
+                    nums = latest_gps_minimum.getString("numsat");
+                    latest_time = latest_gps_minimum.getString("time").split("\\.")[0] + "Z";
+
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+                    df.setTimeZone(TimeZone.getTimeZone("GMT"));
+
+                    Date date = df.parse(latest_time);
+
+                    String latest_time_formatted = date.toString();
 
                     String latest_lon = latest_gps_minimum.getString("lon");
                     String latest_lat = latest_gps_minimum.getString("lat");
@@ -120,16 +149,48 @@ public class QServerConnect extends AsyncTask<JSONObject, JSONObject, String[]> 
                     Double lon = Double.parseDouble(latest_lon);
                     Double lat = Double.parseDouble(latest_lat);
 
-
                     JSONObject ret = getLocation(lat, lon);
-                    JSONObject location;
-                    String location_string = "";
+                    JSONObject location, location_long;
+                    String location_string = "", location_long_string = "", prev_location_long_string = "<no data>";
 
                     location = ret.getJSONArray("results").getJSONObject(2);
                     location_string = location.getString("formatted_address");
-                    Log.d("test", "formatted address:" + location_string);
 
-                    String[] retu = {response, location_string, pct_batt};
+                    location_long = ret.getJSONArray("results").getJSONObject(0);
+                    location_long_string = location_long.getString("formatted_address");
+
+                    String prev_time_formatted = "<no data>";
+
+                    if (aqsens_obj.length() > 1) {
+                        JSONObject second_latest_element = aqsens_obj.getJSONObject(1);
+                        JSONObject second_latest_gps_minimum = second_latest_element.getJSONObject("gpsminimum");
+                        String second_latest_lon = second_latest_gps_minimum.getString("lon");
+                        String second_latest_lat = second_latest_gps_minimum.getString("lat");
+
+                        Double prev_lon = Double.parseDouble(second_latest_lon);
+                        Double prev_lat = Double.parseDouble(second_latest_lat);
+
+                        JSONObject retprev = getLocation(prev_lat, prev_lon);
+                        JSONObject prev_location_long = retprev.getJSONArray("results").getJSONObject(0);
+                        prev_location_long_string = prev_location_long.getString("formatted_address");
+
+                        second_latest_time = second_latest_gps_minimum.getString("time").split("\\.")[0] + "Z";
+
+                        SimpleDateFormat dfp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+                        dfp.setTimeZone(TimeZone.getTimeZone("GMT"));
+
+                        Date dateprev = dfp.parse(second_latest_time);
+
+                        prev_time_formatted = dateprev.toString();
+
+                    }
+
+                    String full_settings_str = location_long_string + "!" + temp + "!" + humidity + "!" + height + "!" + speed + "!" + direction + "!" + nums + "!" + latest_time_formatted + "!" + prev_time_formatted;
+
+                    Log.d("test333", "formatted address:" + location_string);
+                    Log.d("test334", "formatted address:" + location_long_string);
+
+                    String[] retu = {response, location_string, full_settings_str, prev_location_long_string, pct_batt};
 
                     return retu;
 
@@ -138,14 +199,14 @@ public class QServerConnect extends AsyncTask<JSONObject, JSONObject, String[]> 
                 }
 
             }
-            String[] retu = {response, "<no data>", pct_batt};
+            String[] retu = {response, "<no data>", "<no data>", pct_batt};
             return retu;
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        String[] retu = {"failed", "", ""};
+        String[] retu = {"failed", "", "", ""};
 
         return retu;
     }

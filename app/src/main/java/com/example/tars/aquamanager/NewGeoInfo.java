@@ -2,6 +2,8 @@ package com.example.tars.aquamanager;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -24,6 +26,21 @@ public class NewGeoInfo extends Activity {
 
         final EditText edit_geo_name = (EditText) findViewById(R.id.edit_geo_name);
         final EditText edit_geo_rad = (EditText) findViewById(R.id.edit_geo_rad);
+
+        InputFilter filter = new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end,
+                                       Spanned dest, int dstart, int dend) {
+                for (int i = start; i < end; i++) {
+                    if (!Character.isLetterOrDigit(source.charAt(i))) {
+                        return "";
+                    }
+                }
+                return null;
+            }
+        };
+
+        edit_geo_name.setFilters(new InputFilter[]{filter});
 
         circle_checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

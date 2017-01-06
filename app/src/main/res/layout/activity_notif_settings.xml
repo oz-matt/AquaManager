@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.tars.aquamanager.NotifSettings">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Device Name"
+        android:id="@+id/ni_devicename_tv"
+        android:layout_marginLeft="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_below="@+id/textView12"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="15dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Trigger"
+        android:id="@+id/ni_trigger_tv"
+        android:layout_below="@+id/ni_aquakey_tv"
+        android:layout_alignLeft="@+id/ni_devicename_tv"
+        android:layout_alignStart="@+id/ni_devicename_tv" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/ni_aquakey_tv"
+        android:text="Aquakey"
+        android:layout_marginLeft="18dp"
+        android:layout_marginStart="18dp"
+        android:layout_below="@+id/ni_devicename_tv"
+        android:layout_alignLeft="@+id/ni_devicename_tv"
+        android:layout_alignStart="@+id/ni_devicename_tv" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/di_phonenumber_tve"
+        android:layout_below="@+id/di_aquakey_tve"
+        android:layout_alignRight="@+id/di_aquakey_tve" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/di_aquakey_tve"
+        android:layout_below="@+id/ni_devicename_tve"
+        android:layout_alignRight="@+id/ni_devicename_tve" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/ni_devicename_tve"
+        android:layout_alignTop="@+id/ni_devicename_tv"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="15dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Notification Info"
+        android:id="@+id/textView12"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Geofence"
+        android:id="@+id/ni_geofence_tv"
+        android:layout_below="@+id/ni_trigger_tv"
+        android:layout_alignLeft="@+id/ni_trigger_tv"
+        android:layout_alignStart="@+id/ni_trigger_tv" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Alert"
+        android:id="@+id/ni_alert_tv"
+        android:layout_below="@+id/ni_geofence_tv"
+        android:layout_alignLeft="@+id/ni_geofence_tv"
+        android:layout_alignStart="@+id/ni_geofence_tv"
+        android:layout_marginTop="32dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Alert Target"
+        android:id="@+id/ni_alerttarget_tv"
+        android:layout_below="@+id/ni_alert_tv"
+        android:layout_alignLeft="@+id/ni_alert_tv"
+        android:layout_alignStart="@+id/ni_alert_tv" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="ID"
+        android:id="@+id/ni_id_tv"
+        android:layout_marginTop="32dp"
+        android:layout_below="@+id/ni_alerttarget_tv"
+        android:layout_alignLeft="@+id/ni_alerttarget_tv"
+        android:layout_alignStart="@+id/ni_alerttarget_tv" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/ni_geofence_tve"
+        android:layout_below="@+id/di_phonenumber_tve"
+        android:layout_alignRight="@+id/di_phonenumber_tve" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/ni_alert_tve"
+        android:layout_alignTop="@+id/ni_alert_tv"
+        android:layout_alignRight="@+id/ni_geofence_tve" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/ni_alerttarget_tve"
+        android:layout_below="@+id/ni_alert_tve"
+        android:layout_alignRight="@+id/ni_alert_tve" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/ni_id_tve"
+        android:layout_below="@+id/ni_alerttarget_tve"
+        android:layout_alignRight="@+id/ni_alerttarget_tve"
+        android:layout_marginTop="32dp" />
+</RelativeLayout>

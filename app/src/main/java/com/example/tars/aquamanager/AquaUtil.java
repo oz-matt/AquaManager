@@ -71,6 +71,8 @@ import java.util.UUID;
              ]
         !dev_MyAqua_locstr
             New Fairfield, CT
+        !dev_MyAqua_locstrlong
+            Musket Ridge Rd, New Fairfield, CT
         !dev_MyAqua_pctbat
             85
         !dev_MyAqua_settings
@@ -219,7 +221,7 @@ public class AquaUtil {
                     //icon_rl.setPadding(0,0,30,0);
                     //icon_rl.setId(R.id.icon_rl_id);
 
-                    String[] strings={"Settings","Rename","Remove"};
+                    String[] strings={"Info","Raw Data","Remove"};
                     final NDSpinner spinner=new NDSpinner(context);
                     spinner.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item,strings));
 
@@ -232,71 +234,14 @@ public class AquaUtil {
                             check=check+1;
                             if(check > 1) {
                                 String selectedItem = parent.getItemAtPosition(position).toString();
-                                if (selectedItem.equals("Settings")) {
-                                    Intent intent=new Intent(Main.context, DeviceSettings.class);
+                                if (selectedItem.equals("Info")) {
+                                    Intent intent = new Intent(Main.context, DeviceSettings.class);
                                     intent.putExtra("name", name);
                                     context.startActivity(intent);
-                                } else if (selectedItem.equals("Rename")) {
-
-                                    final EditText input = new EditText(context);
-                                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                                            LinearLayout.LayoutParams.MATCH_PARENT,
-                                            LinearLayout.LayoutParams.MATCH_PARENT);
-                                    input.setLayoutParams(lp);
-                                    new AlertDialog.Builder(context)
-                                            .setTitle("Rename entry")
-                                            .setMessage("Enter new name for " + name + ":")
-                                            .setView(input)
-                                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    String checkname = newNameIsAcceptable(input.getText().toString(), context);
-                                                    if (checkname.equalsIgnoreCase("Good")) {
-                                                        String oldname = name;
-                                                        String newname = input.getText().toString();
-
-                                                        String temp_qdata = aqua_shared_prefs.getString("!dev_" + oldname + "_qdata", "Not found");
-                                                        String temp_aqsens = aqua_shared_prefs.getString("!dev_" + oldname + "_aqsens", "Not found");
-                                                        String temp_notifs = aqua_shared_prefs.getString("!dev_" + oldname + "_notifs", "Not found");
-                                                        String temp_locstr = aqua_shared_prefs.getString("!dev_" + oldname + "_locstr", "Not found");
-                                                        String temp_pctbat = aqua_shared_prefs.getString("!dev_" + oldname + "_pctbat", "Not found");
-                                                        String temp_settings = aqua_shared_prefs.getString("!dev_" + oldname + "_settings", "Not found");
-
-                                                        SharedPreferences.Editor aqedit = aqua_shared_prefs.edit();
-                                                        aqedit.putString("!dev_" + newname + "_qdata", temp_qdata);
-                                                        aqedit.putString("!dev_" + newname + "_aqsens", temp_aqsens);
-                                                        aqedit.putString("!dev_" + newname + "_notifs", temp_notifs);
-                                                        aqedit.putString("!dev_" + newname + "_locstr", temp_locstr);
-                                                        aqedit.putString("!dev_" + newname + "_pctbat", temp_pctbat);
-                                                        aqedit.putString("!dev_" + newname + "_settings", temp_settings);
-
-                                                        aqedit.remove("!dev_" + oldname + "_qdata");
-                                                        aqedit.remove("!dev_" + oldname + "_aqsens");
-                                                        aqedit.remove("!dev_" + oldname + "_notifs");
-                                                        aqedit.remove("!dev_" + oldname + "_locstr");
-                                                        aqedit.remove("!dev_" + oldname + "_pctbat");
-                                                        aqedit.remove("!dev_" + oldname + "_settings");
-
-                                                        aqedit.apply();
-
-                                                        Toast.makeText(context, oldname + " changed to " + newname, Toast.LENGTH_SHORT).show();
-
-                                                        HomeDevices.refresh_device_table(context, HomeDevices.view);
-
-                                                    } else if (checkname.equalsIgnoreCase("NameExists")) {
-                                                        Toast.makeText(context, "Name already exists", Toast.LENGTH_SHORT).show();
-                                                    } else if (checkname.equalsIgnoreCase("TooShort")) {
-                                                        Toast.makeText(context, "Please use at least 2 characters", Toast.LENGTH_SHORT).show();
-                                                    } else {
-                                                        Toast.makeText(context, "Bad Return Val", Toast.LENGTH_SHORT).show();
-                                                    }
-                                                }
-                                            })
-                                            .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int which) {
-
-                                                }
-                                            })
-                                            .show();
+                                } else if (selectedItem.equals("Raw Data")) {
+                                    Intent intent = new Intent(Main.context, DeviceRawData.class);
+                                    intent.putExtra("name", name);
+                                    context.startActivity(intent);
                                 } else if (selectedItem.equals("Remove")) {
                                     new AlertDialog.Builder(context)
                                             .setTitle("Remove entry")
@@ -472,73 +417,6 @@ public class AquaUtil {
                         }
                     });
 
-                /*TextView newName = new TextView(context);
-                TableRow.LayoutParams nnlp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, .25f);
-                nnlp.setMargins(margin,margin,0,margin);
-                newName.setLayoutParams(nnlp);
-                newName.setLines(2);
-                newName.setGravity(Gravity.CENTER);
-                newName.setBackgroundResource(R.color.holoBlueDark);
-                newName.setText(name);
-                newName.setTextColor(Color.WHITE);
-
-                TextView newLoc = new TextView(context);
-                TableRow.LayoutParams nllp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, .55f);
-                nllp.setMargins(0, margin, 0, margin);
-                newLoc.setLayoutParams(nllp);
-                newLoc.setText("New Fairfield CT, USA");
-                nllp.width = (0);
-                newLoc.setLines(2);
-                newLoc.setGravity(Gravity.CENTER);
-                newLoc.setBackgroundResource(R.color.holoBlueDark);
-                newLoc.setTextColor(Color.WHITE);
-
-                TextView newChg = new TextView(context);
-                TableRow.LayoutParams nclp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, .20f);
-                nclp.width=(0);
-                newChg.setGravity(Gravity.CENTER);
-                nclp.setMargins(0, margin, 0, margin);
-                newChg.setText("89");
-                newChg.setLines(2);
-                newChg.setLayoutParams(nclp);
-                newChg.setBackgroundResource(R.color.holoBlueDark);
-                newChg.setTextColor(Color.WHITE);
-
-
-                ImageButton device_settings = new ImageButton(context);
-                TableRow.LayoutParams nilp = new TableRow.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT, .13f);
-                nilp.width= 0;
-                nilp.setMargins(0, margin, margin, margin);
-                device_settings.setLayoutParams(nilp);
-                device_settings.setImageResource(R.drawable.settings);
-                device_settings.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                device_settings.setBackgroundColor(context.getResources().getColor(R.color.holoBlueDark));
-
-                TableRow newModuleRow = new TableRow(context);
-                View spacerColumn = new View(context);
-
-                newModuleRow.addView(spacerColumn, new TableRow.LayoutParams(1, 80*margin)); //Added to set overall row height.
-
-                newModuleRow.setBackgroundColor(context.getResources().getColor(R.color.holoBlueMidnight));
-                newModuleRow.addView(newName,nnlp);
-                newModuleRow.addView(newLoc, nllp);
-                newModuleRow.addView(newChg, nclp);
-                newModuleRow.addView(device_settings, nilp);
-
-                newModuleRow.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                        if (clickFunction == "None") Toast.makeText(context, "Eye Of Horus", Toast.LENGTH_SHORT).show();
-                        //if (clickFunction == "Edits") editModule(context, key);
-                        //if (clickFunction == "NewNotification") {
-                        //    final TextView newNotifFor = (TextView)((Activity)context).findViewById(R.id.textView1);
-                        //    newNotifFor.setText("New notification for: " + entry);
-
-                        //}
-                    }
-                });*/
-
                     layout.addView(row_rl, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
 
                 } catch (Exception e) {
@@ -609,7 +487,7 @@ public class AquaUtil {
                     //icon_rl.setPadding(0,0,30,0);
                     //icon_rl.setId(R.id.icon_rl_id);
 
-                    String[] strings={"Settings","Rename","Remove"};
+                    String[] strings={"Settings","Remove"};
                     final NDSpinner spinner=new NDSpinner(context);
                     spinner.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item,strings));
 
@@ -623,9 +501,9 @@ public class AquaUtil {
                             if(check > 1) {
                                 String selectedItem = parent.getItemAtPosition(position).toString();
                                 if (selectedItem.equals("Settings")) {
-                                    /*Intent intent=new Intent(Main.context, DeviceSettings.class);
-                                    intent.putExtra("name", name);
-                                    context.startActivity(intent);*/
+                                    Intent intent=new Intent(Main.context, NotifSettings.class);
+                                    intent.putExtra("ntf_num", ntf_num);
+                                    context.startActivity(intent);
                                 } else if (selectedItem.equals("Remove")) {
                                     new AlertDialog.Builder(context)
                                             .setTitle("Remove entry")
@@ -1019,7 +897,7 @@ public class AquaUtil {
                     //icon_rl.setPadding(0,0,30,0);
                     //icon_rl.setId(R.id.icon_rl_id);
 
-                    String[] strings={"Rename","Remove"};
+                    String[] strings={"Remove"};
                     final NDSpinner spinner=new NDSpinner(context);
                     spinner.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item,strings));
 
@@ -1032,52 +910,7 @@ public class AquaUtil {
                             chexgeo=chexgeo+1;
                             if(chexgeo > 1) {
                                 String selectedItem = parent.getItemAtPosition(position).toString();
-                                if (selectedItem.equals("Rename")) {
-                                    final EditText input = new EditText(context);
-                                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                                            LinearLayout.LayoutParams.MATCH_PARENT,
-                                            LinearLayout.LayoutParams.MATCH_PARENT);
-                                    input.setLayoutParams(lp);
-                                    new AlertDialog.Builder(context)
-                                            .setTitle("Rename entry")
-                                            .setMessage("Enter new name for " + geofence_name + ":")
-                                            .setView(input)
-                                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    String checkname = newGeoNameIsAcceptable(input.getText().toString(), context);
-                                                    if (checkname.equalsIgnoreCase("Good")) {
-                                                        String oldname = geofence_name;
-                                                        String newname = input.getText().toString();
-
-                                                        String temp_geo = aqua_shared_prefs.getString("!geo_" + oldname + "_settings", "Not found");
-
-                                                        SharedPreferences.Editor aqedit = aqua_shared_prefs.edit();
-                                                        aqedit.putString("!geo_" + newname + "_settings", temp_geo);
-
-                                                        aqedit.remove("!geo_" + oldname + "_settings");
-
-                                                        aqedit.apply();
-
-                                                        Toast.makeText(context, oldname + " changed to " + newname, Toast.LENGTH_SHORT).show();
-
-                                                        HomeGeofences.refresh_geofence_table(context, HomeGeofences.view);
-
-                                                    } else if (checkname.equalsIgnoreCase("NameExists")) {
-                                                        Toast.makeText(context, "Name already exists", Toast.LENGTH_SHORT).show();
-                                                    } else if (checkname.equalsIgnoreCase("TooShort")) {
-                                                        Toast.makeText(context, "Please use at least 2 characters", Toast.LENGTH_SHORT).show();
-                                                    } else {
-                                                        Toast.makeText(context, "Bad Return Val", Toast.LENGTH_SHORT).show();
-                                                    }
-                                                }
-                                            })
-                                            .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int which) {
-
-                                                }
-                                            })
-                                            .show();
-                                } else if (selectedItem.equals("Remove")) {
+                                if (selectedItem.equals("Remove")) {
                                     new AlertDialog.Builder(context)
                                             .setTitle("Remove entry")
                                             .setMessage("Are you sure you want to remove this entry, along with all associated notifications?")

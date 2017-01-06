@@ -78,7 +78,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text=":"
-            android:id="@+id/textView5" />
+            android:id="@+id/ni_trigger_tv" />
         <EditText
             android:layout_width="41dp"
             android:layout_height="wrap_content"

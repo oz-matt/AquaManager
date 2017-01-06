@@ -150,7 +150,9 @@ public class AddDevice extends Activity implements QServerConnect.AsyncResponse{
                                             intent.putExtra("aqsens", aqsens);
                                             Log.d("test2", output[1]);
                                             intent.putExtra("loc", output[1]);
-                                            intent.putExtra("batt", output[2]);
+                                            intent.putExtra("fullsettings", output[2]);
+                                            intent.putExtra("prevloclong", output[3]);
+                                            intent.putExtra("batt", output[4]);
 
                                             finish();
 

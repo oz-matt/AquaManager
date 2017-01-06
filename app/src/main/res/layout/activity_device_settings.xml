@@ -9,62 +9,324 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.tars.aquamanager.DeviceSettings">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Phone No."
-        android:id="@+id/alarm_tv"
-        android:layout_marginLeft="16dp"
-        android:layout_marginBottom="38dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/di_scrollView" >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Aqua Key"
-        android:id="@+id/textView5"
-        android:layout_above="@+id/alarm_tv"
-        android:layout_alignLeft="@+id/alarm_tv"
-        android:layout_alignStart="@+id/alarm_tv" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/di_svrl"
+            android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Aqua ID"
-        android:id="@+id/textView6"
-        android:layout_above="@+id/textView5"
-        android:layout_alignLeft="@+id/textView5"
-        android:layout_alignStart="@+id/textView5" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Phone Number"
+                android:id="@+id/alarm_tv"
+                android:layout_alignParentBottom="false"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/ni_trigger_tv"
+                android:layout_marginLeft="16dp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/needPhoneNo"
-        android:layout_marginRight="16dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="false"
-        android:layout_marginBottom="38dp"
-        android:layout_alignParentBottom="true" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Aqua Key"
+                android:id="@+id/ni_trigger_tv"
+                android:layout_alignLeft="@+id/alarm_tv"
+                android:layout_alignStart="@+id/alarm_tv"
+                android:layout_below="@+id/ni_aquakey_tv" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/needAquaKey"
-        android:layout_above="@+id/needPhoneNo"
-        android:layout_alignRight="@+id/needPhoneNo" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Aqua ID"
+                android:id="@+id/ni_aquakey_tv"
+                android:layout_alignLeft="@+id/ni_trigger_tv"
+                android:layout_alignStart="@+id/ni_trigger_tv"
+                android:layout_below="@+id/textView23"
+                android:layout_marginTop="32dp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/needAquaID"
-        android:layout_above="@+id/needAquaKey"
-        android:layout_alignRight="@+id/needAquaKey" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/di_phonenumber_tve"
+                android:layout_alignTop="@+id/alarm_tv"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="false"
+                android:layout_marginRight="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/di_aquakey_tve"
+                android:layout_alignRight="@+id/di_phonenumber_tve"
+                android:layout_above="@+id/di_phonenumber_tve" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/di_aquaid_tve"
+                android:layout_above="@+id/di_aquakey_tve"
+                android:layout_alignRight="@+id/di_aquakey_tve" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Device Info"
+                android:id="@+id/textView5"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Name"
+                android:id="@+id/textView6"
+                android:layout_below="@+id/textView5"
+                android:layout_alignLeft="@+id/ni_aquakey_tv"
+                android:layout_alignStart="@+id/ni_aquakey_tv"
+                android:layout_marginTop="5dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Current Location"
+                android:id="@+id/curloc_tve"
+                android:layout_marginTop="8dp"
+                android:layout_below="@+id/di_battery_tv"
+                android:layout_centerHorizontal="true" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_below="@+id/curloc_tve"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="2dp"
+                android:padding="5dp"
+                android:background="@color/holoBlueDark"
+                android:id="@+id/relativeLayout2"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Medium Text"
+                    android:id="@+id/di_currentlocation_tve"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:padding="4dp" />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Previous Location"
+                android:id="@+id/prevloc_tve"
+                android:layout_marginTop="8dp"
+                android:layout_below="@+id/relativeLayout2"
+                android:layout_centerHorizontal="true" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginTop="2dp"
+                android:padding="5dp"
+                android:background="@color/holoBlueDark"
+                android:id="@+id/relativeLayout3"
+                android:layout_below="@+id/prevloc_tve"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Medium Text"
+                    android:id="@+id/di_previouslocation_tve"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:padding="4dp" />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Battery"
+                android:id="@+id/di_battery_tv"
+                android:layout_below="@+id/textView6"
+                android:layout_alignLeft="@+id/textView6"
+                android:layout_alignStart="@+id/textView6" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Marker Color"
+                android:id="@+id/textView17"
+                android:layout_below="@+id/relativeLayout3"
+                android:layout_alignLeft="@+id/ni_aquakey_tv"
+                android:layout_alignStart="@+id/ni_aquakey_tv"
+                android:layout_marginTop="40dp" />
+
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/di_spinner"
+                android:layout_alignTop="@+id/textView17"
+                android:layout_alignRight="@+id/relativeLayout3"
+                android:layout_alignEnd="@+id/relativeLayout3"
+                android:layout_marginTop="-17dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/di_name_tve"
+                android:layout_alignTop="@+id/textView6"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/di_battery_tve"
+                android:layout_below="@+id/di_name_tve"
+                android:layout_alignRight="@+id/di_name_tve"
+                android:layout_alignEnd="@+id/di_name_tve" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Temperature"
+                android:id="@+id/textView18"
+                android:layout_marginTop="22dp"
+                android:layout_below="@+id/di_spinner"
+                android:layout_alignLeft="@+id/textView17"
+                android:layout_alignStart="@+id/textView17" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Humidity"
+                android:id="@+id/textView19"
+                android:layout_below="@+id/textView18"
+                android:layout_alignLeft="@+id/textView18"
+                android:layout_alignStart="@+id/textView18" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Height Above Sea Level (m)"
+                android:id="@+id/textView20"
+                android:layout_below="@+id/textView19"
+                android:layout_alignLeft="@+id/textView19"
+                android:layout_alignStart="@+id/textView19" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Speed (mph)"
+                android:id="@+id/textView21"
+                android:layout_below="@+id/textView20"
+                android:layout_alignLeft="@+id/textView20"
+                android:layout_alignStart="@+id/textView20" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Direction (degrees from north)"
+                android:id="@+id/textView22"
+                android:layout_below="@+id/textView21"
+                android:layout_alignLeft="@+id/textView21"
+                android:layout_alignStart="@+id/textView21" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Number of Satelittes in View"
+                android:id="@+id/textView23"
+                android:layout_below="@+id/textView22"
+                android:layout_alignLeft="@+id/textView22"
+                android:layout_alignStart="@+id/textView22" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/di_temp_tve"
+                android:layout_alignTop="@+id/textView18"
+                android:layout_alignRight="@+id/di_aquaid_tve"
+                android:layout_alignEnd="@+id/di_aquaid_tve" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/di_humidity_tve"
+                android:layout_below="@+id/di_temp_tve"
+                android:layout_alignRight="@+id/di_temp_tve"
+                android:layout_alignEnd="@+id/di_temp_tve" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/di_height_tve"
+                android:layout_below="@+id/di_humidity_tve"
+                android:layout_alignRight="@+id/di_humidity_tve"
+                android:layout_alignEnd="@+id/di_humidity_tve" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/di_speed_tve"
+                android:layout_below="@+id/di_height_tve"
+                android:layout_alignRight="@+id/di_height_tve"
+                android:layout_alignEnd="@+id/di_height_tve" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/di_dir_tve"
+                android:layout_below="@+id/di_speed_tve"
+                android:layout_alignRight="@+id/di_speed_tve"
+                android:layout_alignEnd="@+id/di_speed_tve" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/di_nums_tve"
+                android:layout_below="@+id/di_dir_tve"
+                android:layout_alignRight="@+id/di_dir_tve"
+                android:layout_alignEnd="@+id/di_dir_tve" />
+        </RelativeLayout>
+    </ScrollView>
 </RelativeLayout>

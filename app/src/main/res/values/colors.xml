@@ -15,6 +15,9 @@
     <color name="semiRecentUpdateOrange">#FF8119</color>
     <color name="noRecentUpdateRed">#E33F3F</color>
     <color name="whiteTransparent">#EEFFFFFF</color>
+    <color name="white">#FFFFFF</color>
     <color name="transparent">#FFFFFFFF</color>
     <color name="blackTransparent">#55000000</color>
+    <color name="geoOutline">#e22f4253</color>
+    <color name="geoFill">#4a65a3da</color>
 </resources>
