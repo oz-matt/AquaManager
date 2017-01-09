@@ -188,7 +188,7 @@ public class Settings extends Activity {
         numMarkers.setInputType(InputType.TYPE_CLASS_NUMBER);
 
         TextView tv_numMarkers = new TextView(this);
-        tv_numMarkers.setText("No. Markers Per Device");
+        tv_numMarkers.setText("Max No. Markers Per Device");
         tv_numMarkers.setPadding(8*den, 8*den, 8*den, 8*den);
         //tv_numMarkers.setId(131);
         tv_numMarkers.setTextSize(20);
@@ -239,12 +239,29 @@ public class Settings extends Activity {
         sgrl.addView(checkboxHideSimilarMarkers);
         sgrl.addView(showGeos_tv);
 
+        TextView showLaunch_tv = new TextView(this);
+        showLaunch_tv.setText("Show Launch Screen At Start");
+        showLaunch_tv.setPadding(8*den, 8*den, 8*den, 8*den);
+        showLaunch_tv.setTextSize(20);
+        showLaunch_tv.setTextColor(Color.rgb(240,240,240));
+        showLaunch_tv.setLayoutParams(paramsNumMarkTitle);
+
+        final CheckBox showLaunchScreen = new CheckBox(this);
+        showLaunchScreen.setLayoutParams(params28);
+        showLaunchScreen.setChecked(aqua_shared_prefs.getBoolean("!set_showLauncher", false));
+
+        RelativeLayout slrl = new RelativeLayout(this);
+        slrl.setLayoutParams(nmrllp);
+        slrl.addView(showLaunchScreen);
+        slrl.addView(showLaunch_tv);
+
         svll.addView(rl1);
         svll.addView(divider);
         svll.addView(tzrl);
         svll.addView(mdrl);
         svll.addView(nmrl);
         svll.addView(sgrl);
+        svll.addView(slrl);
 
         TextView text_delete_notif = new TextView(this);
         text_delete_notif.setText("Remove Notification From ID");
@@ -306,10 +323,12 @@ public class Settings extends Activity {
             public void onClick(View v) {
                 String numMarkersVal = numMarkers.getText().toString();
                 boolean showGeos = checkboxHideSimilarMarkers.isChecked();
+                boolean showLauncher = showLaunchScreen.isChecked();
 
                 aqua_shared_prefs.edit().putInt("!set_mapDisplayType", spinner.getSelectedItemPosition()).apply();
                 aqua_shared_prefs.edit().putString("!set_numberOfMarkersToShow", numMarkersVal).apply();
                 aqua_shared_prefs.edit().putBoolean("!set_showGeos", showGeos).apply();
+                aqua_shared_prefs.edit().putBoolean("!set_showLauncher", showLauncher).apply();
 
                 finish();
             }

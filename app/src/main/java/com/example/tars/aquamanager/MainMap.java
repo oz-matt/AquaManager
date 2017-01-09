@@ -118,6 +118,7 @@ public class MainMap extends FragmentActivity implements OnMapReadyCallback, Goo
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
+            if (marker.getTitle().contains("@")) {
                 String[] full_marker_data = marker.getTitle().split("@");
 
                 String aqsen_pref = full_marker_data[4];
@@ -130,6 +131,7 @@ public class MainMap extends FragmentActivity implements OnMapReadyCallback, Goo
                 intent.putExtra("aqsens_pref", aqsen_pref);
                 intent.putExtra("aqsens_ele", Integer.parseInt(aqsen_ele));
                 mContext.startActivity(intent);
+            }
             }
         });
 
@@ -356,7 +358,11 @@ public class MainMap extends FragmentActivity implements OnMapReadyCallback, Goo
                 String this_aqsens = aqua_shared_prefs.getString("!dev_" + name + "_aqsens", "Not Found");
                 JSONArray aqsens_json_array = new JSONArray(this_aqsens);
 
-                for (int i = 0; i < aqsens_json_array.length(); i++) {
+                int num_markers = aqua_shared_prefs.getInt("!set_numberOfMarkersToShow", 50);
+
+                if (aqsens_json_array.length() < num_markers) num_markers = aqsens_json_array.length();
+
+                for (int i = 0; i < num_markers; i++) {
                     JSONObject this_aqsens_element = aqsens_json_array.getJSONObject(i);
                     JSONObject this_elements_gpsminimum = this_aqsens_element.getJSONObject("gpsminimum");
                     JSONObject this_elements_sensors = this_aqsens_element.getJSONObject("sensors");
@@ -444,7 +450,7 @@ public class MainMap extends FragmentActivity implements OnMapReadyCallback, Goo
                     Double lon = Double.parseDouble(settings_obj.getString("lon"));
 
                     LatLng markerSpot = new LatLng(lat, lon);
-                    Marker marker = mMap.addMarker(new MarkerOptions().position(markerSpot).title("Geofence: '" + name + "'").icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("flagd", (int) convertDpToPixel(70, this), (int) convertDpToPixel(49, this)))));
+                    Marker marker = mMap.addMarker(new MarkerOptions().position(markerSpot).title(name).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("flagd", (int) convertDpToPixel(70, this), (int) convertDpToPixel(49, this)))));
 
                     markers.add(marker);
                 } else {
@@ -762,7 +768,8 @@ public class MainMap extends FragmentActivity implements OnMapReadyCallback, Goo
 
         } else {
             TextView geotv = new TextView(MainMap.this);
-            geotv.setText("Geofence: '" + title + "'");
+            String cat_geo_title = "Geofence: '" + title + "'";
+            geotv.setText(cat_geo_title);
             geotv.setTextColor(getResources().getColor(R.color.holoBlueDark));
 
             return geotv;

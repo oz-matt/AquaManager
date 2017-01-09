@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.Gravity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,9 +22,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
 
-/**
- * Created by TARS on 6/13/2016.
- */
 public class QServerGetAqsens extends AsyncTask<String, String, String> {
     private Activity mContext;
     private ProgressDialog mDialog;
@@ -39,11 +37,14 @@ public class QServerGetAqsens extends AsyncTask<String, String, String> {
     public QServerGetAqsens(Activity context, AsyncResponse delegate) {
         mContext = context;
         mDialog = new ProgressDialog(context);
+        this.mDialog.setCancelable(false);
         this.delegate = delegate;
     }
 
     protected void onPreExecute() {
         this.mDialog.show();
+        this.mDialog.setContentView(R.layout.progressdialog);
+        this.mDialog.getWindow().setGravity(Gravity.CENTER);
     }
 
     protected String doInBackground(String... str) {

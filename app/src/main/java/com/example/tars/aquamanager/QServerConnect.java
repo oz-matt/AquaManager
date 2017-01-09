@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -30,9 +31,6 @@ import java.util.TimeZone;
 
 import javax.net.ssl.HttpsURLConnection;
 
-/**
- * Created by TARS on 6/7/2016.
- */
 public class QServerConnect extends AsyncTask<JSONObject, JSONObject, String[]> {
 
     private Activity mContext;
@@ -51,12 +49,15 @@ public class QServerConnect extends AsyncTask<JSONObject, JSONObject, String[]> 
     public QServerConnect(Activity context, boolean needloc, AsyncResponse delegate) {
         mContext = context;
         mDialog = new ProgressDialog(context);
+        this.mDialog.setCancelable(false);
         this.delegate = delegate;
         needLocation = needloc;
     }
 
     protected void onPreExecute() {
         this.mDialog.show();
+        this.mDialog.setContentView(R.layout.progressdialog);
+        this.mDialog.getWindow().setGravity(Gravity.CENTER);
     }
 
     protected String[] doInBackground(final JSONObject... outgoing_json) {

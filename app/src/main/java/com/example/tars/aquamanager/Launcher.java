@@ -2,6 +2,7 @@ package com.example.tars.aquamanager;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -13,6 +14,16 @@ public class Launcher extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        SharedPreferences aqua_shared_prefs = getSharedPreferences("aqua_shared_prefs", MODE_PRIVATE);
+
+        if (!aqua_shared_prefs.getBoolean("!set_showLauncher", true)) {
+            Intent intent=new Intent(Launcher.this, Main.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
 

@@ -142,17 +142,26 @@ public class AquaUtil {
 
         aqua_shared_prefs.edit().clear().commit();
 
-        aqua_shared_prefs.edit().putInt("!set_mapDisplayType", 0).apply();
-        aqua_shared_prefs.edit().putString("!set_numberOfMarkersToShow", "50").apply();
-        aqua_shared_prefs.edit().putBoolean("!set_showGeos", true).apply();
-
+        if (!aqua_shared_prefs.contains("!set_mapDisplayType")) {
+            aqua_shared_prefs.edit().putInt("!set_mapDisplayType", 0).apply();
+        }
+        if (!aqua_shared_prefs.contains("!set_numberOfMarkersToShow")) {
+            aqua_shared_prefs.edit().putString("!set_numberOfMarkersToShow", "50").apply();
+        }
+        if (!aqua_shared_prefs.contains("!set_showGeos")) {
+            aqua_shared_prefs.edit().putBoolean("!set_showGeos", true).apply();
+        }
         if (!aqua_shared_prefs.contains("iid")) {
             String iid = UUID.randomUUID().toString();
-            aqua_shared_prefs.edit().putString("iid", iid).commit();
+            aqua_shared_prefs.edit().putString("iid", iid).apply();
+
+}
+        if (!aqua_shared_prefs.contains("num_notifs")) {
+            aqua_shared_prefs.edit().putInt("num_notifs", 0).apply();
         }
 
-        if (!aqua_shared_prefs.contains("num_notifs")) {
-            aqua_shared_prefs.edit().putInt("num_notifs", 0).commit();
+        if (!aqua_shared_prefs.contains("!set_showLauncher")) {
+            aqua_shared_prefs.edit().putBoolean("!set_showLauncher", true).apply();
         }
 
     }
@@ -324,7 +333,9 @@ public class AquaUtil {
                     nclp.width=(0);
                     newChg.setGravity(Gravity.CENTER);
                     nclp.setMargins(0, margin, 0, margin);
-                    newChg.setText(aqua_shared_prefs.getString("!dev_" + name + "_pctbat", "N/F"));
+                    String pct_batt = aqua_shared_prefs.getString("!dev_" + name + "_pctbat", "N/F");
+                    if (!(pct_batt.equalsIgnoreCase("N/F"))) pct_batt = pct_batt + "%";
+                    newChg.setText(pct_batt);
                     newChg.setLines(2);
                     newChg.setLayoutParams(nclp);
                     newChg.setBackgroundColor(device_row_color);
@@ -854,6 +865,9 @@ public class AquaUtil {
             if (entry.getKey().startsWith("!geo_")) {
                 String key = entry.getKey();
                 String val = entry.getValue().toString();
+
+                Log.d("Mydata11", key + " : " + val);
+
                 final String geofence_name = key.substring(5, key.length() - 9);
 
                 try {

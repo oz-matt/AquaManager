@@ -17,4 +17,27 @@
         <item name="colorAccent">@color/holoBlueLit</item>
     </style>
 
+    <style name="MyTheme" parent="android:Theme.Holo.Light.Dialog.NoActionBar">
+        <item name="android:alertDialogStyle">@style/CustomAlertDialogStyle</item>
+        <item name="android:windowBackground">@color/holoBlueDark</item>
+        <item name="android:textColorPrimary">@color/recentUpdateGreen</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="CustomAlertDialogStyle">
+        <item name="android:bottomBright">@color/holoBlueDark</item>
+        <item name="android:bottomDark">@color/holoBlueDark</item>
+        <item name="android:bottomMedium">@color/holoBlueDark</item>
+        <item name="android:centerBright">@color/holoBlueDark</item>
+        <item name="android:centerDark">@color/holoBlueDark</item>
+        <item name="android:centerMedium">@color/holoBlueDark</item>
+        <item name="android:fullBright">@color/holoBlueDark</item>
+        <item name="android:fullDark">@color/holoBlueDark</item>
+        <item name="android:topBright">@color/holoBlueDark</item>
+        <item name="android:topDark">@color/holoBlueDark</item>
+    </style>
+
 </resources>

@@ -261,8 +261,9 @@ public class GeofenceMap extends FragmentActivity implements OnMapReadyCallback,
                 String lon = String.valueOf(geocenter.longitude);
 
                 Double area = 3.1416 * (rad * rad);
+                Integer int_area = area.intValue();
 
-                String[] getlocdata = {lat, lon, name, "circle", rad.toString(), area.toString()};
+                String[] getlocdata = {lat, lon, name, "circle", rad.toString(), int_area.toString()};
 
                 GetLocationOnly get = new GetLocationOnly(activity);
                 get.execute(getlocdata);
@@ -376,6 +377,8 @@ public class GeofenceMap extends FragmentActivity implements OnMapReadyCallback,
 
                 Double area_d = (calculateAreaOfGPSPolygonOnEarthInSquareMeters(box_latlngs))/(2.59e6);
                 Integer area = area_d.intValue();
+
+                Log.d("Mydata10", area.toString());
 
                 try {
 
