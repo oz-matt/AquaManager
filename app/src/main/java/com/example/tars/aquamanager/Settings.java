@@ -181,7 +181,7 @@ public class Settings extends Activity {
         paramsNumMarkers.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         numMarkers.setLayoutParams(paramsNumMarkers);
         //numMarkers.setGravity(Gravity.CENTER);
-        numMarkers.setText(aqua_shared_prefs.getString("!set_numberOfMarkersToShow", "?"));
+        numMarkers.setText(String.valueOf(aqua_shared_prefs.getInt("!set_numberOfMarkersToShow", 0)));
         numMarkers.setPadding(8*den, 15*den, 8*den, 8*den);
         //numMarkers.setId(130);
         numMarkers.setFilters(new InputFilter[]{ new InputFilterMinMax("0", "1000")});
@@ -326,7 +326,7 @@ public class Settings extends Activity {
                 boolean showLauncher = showLaunchScreen.isChecked();
 
                 aqua_shared_prefs.edit().putInt("!set_mapDisplayType", spinner.getSelectedItemPosition()).apply();
-                aqua_shared_prefs.edit().putString("!set_numberOfMarkersToShow", numMarkersVal).apply();
+                aqua_shared_prefs.edit().putInt("!set_numberOfMarkersToShow", Integer.parseInt(numMarkersVal)).apply();
                 aqua_shared_prefs.edit().putBoolean("!set_showGeos", showGeos).apply();
                 aqua_shared_prefs.edit().putBoolean("!set_showLauncher", showLauncher).apply();
 

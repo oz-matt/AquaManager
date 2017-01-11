@@ -74,6 +74,6 @@ public class HomeNotifications extends Fragment {
     public static void refresh_notification_table(Context context, View view) {
         TableLayout notif_table = (TableLayout) view.findViewById(R.id.notif_tl);
         notif_table.removeAllViews();
-        AquaUtil.populateNotificationRows(context, notif_table, "None");
+        AquaUtil.populateNotificationRows(context, notif_table, "Settings");
     }
 }

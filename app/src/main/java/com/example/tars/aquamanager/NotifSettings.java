@@ -29,6 +29,8 @@ public class NotifSettings extends Activity {
 
         TextView ni_id = (TextView) findViewById(R.id.ni_id_tve);
 
+        TextView trig_freq = (TextView) findViewById(R.id.trig_freq);
+
         try {
             JSONObject ntf_data = new JSONObject(aqua_shared_prefs.getString("!ntf_" + num_ntf + "_data", "Not Found"));
 
@@ -36,6 +38,8 @@ public class NotifSettings extends Activity {
             ni_aquakey.setText(aqua_shared_prefs.getString("!ntf_" + num_ntf + "_tkey", "Not Found"));
             ni_trigger.setText(ntf_data.getString("trigger"));
 
+            if (ntf_data.getString("continuous").equalsIgnoreCase("true")) trig_freq.setText("Continuous");
+            else trig_freq.setText("On Change");
             if (ntf_data.has("geoname")) {
                 ni_geofence.setText(ntf_data.getString("geoname"));
             } else {

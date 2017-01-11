@@ -146,7 +146,7 @@ public class AquaUtil {
             aqua_shared_prefs.edit().putInt("!set_mapDisplayType", 0).apply();
         }
         if (!aqua_shared_prefs.contains("!set_numberOfMarkersToShow")) {
-            aqua_shared_prefs.edit().putString("!set_numberOfMarkersToShow", "50").apply();
+            aqua_shared_prefs.edit().putInt("!set_numberOfMarkersToShow", 50).apply();
         }
         if (!aqua_shared_prefs.contains("!set_showGeos")) {
             aqua_shared_prefs.edit().putBoolean("!set_showGeos", true).apply();
@@ -644,7 +644,11 @@ public class AquaUtil {
                                 newChg.setBackgroundColor(device_row_color);
                                 newName.setBackgroundColor(device_row_color);
                                 icon_rl.setBackgroundColor(device_row_color);
-                                if (clickFunction.equalsIgnoreCase("None")) Toast.makeText(context, "Eye Of Horus", Toast.LENGTH_SHORT).show();
+                                if (clickFunction.equalsIgnoreCase("Settings")) {
+                                    Intent intent=new Intent(Main.context, NotifSettings.class);
+                                    intent.putExtra("ntf_num", ntf_num);
+                                    context.startActivity(intent);
+                                }
                             }
                             return true;
                         }
@@ -663,6 +667,11 @@ public class AquaUtil {
                                 newChg.setBackgroundColor(device_row_color);
                                 newName.setBackgroundColor(device_row_color);
                                 icon_rl.setBackgroundColor(device_row_color);
+                                if (clickFunction.equalsIgnoreCase("Settings")) {
+                                    Intent intent=new Intent(Main.context, NotifSettings.class);
+                                    intent.putExtra("ntf_num", ntf_num);
+                                    context.startActivity(intent);
+                                }
                             }
                             return true;
                         }
@@ -681,6 +690,11 @@ public class AquaUtil {
                                 newChg.setBackgroundColor(device_row_color);
                                 newName.setBackgroundColor(device_row_color);
                                 icon_rl.setBackgroundColor(device_row_color);
+                                if (clickFunction.equalsIgnoreCase("Settings")) {
+                                    Intent intent=new Intent(Main.context, NotifSettings.class);
+                                    intent.putExtra("ntf_num", ntf_num);
+                                    context.startActivity(intent);
+                                }
                             }
                             return true;
                         }

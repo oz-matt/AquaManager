@@ -359,8 +359,10 @@ public class MainMap extends FragmentActivity implements OnMapReadyCallback, Goo
                 JSONArray aqsens_json_array = new JSONArray(this_aqsens);
 
                 int num_markers = aqua_shared_prefs.getInt("!set_numberOfMarkersToShow", 50);
+                Log.d("num6", String.valueOf(num_markers));
 
                 if (aqsens_json_array.length() < num_markers) num_markers = aqsens_json_array.length();
+                Log.d("num6", String.valueOf(num_markers));
 
                 for (int i = 0; i < num_markers; i++) {
                     JSONObject this_aqsens_element = aqsens_json_array.getJSONObject(i);

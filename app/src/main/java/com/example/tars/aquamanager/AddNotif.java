@@ -10,6 +10,9 @@ import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +30,8 @@ public class AddNotif extends Activity {
     static final int GET_DEVICE_FOR_NOTIF = 1;
     static final int GET_TRIGGER_FOR_NOTIF = 2;
     static final int GET_ALARM_FOR_NOTIF = 3;
+
+    boolean continuous = true;
 
     TextView tv_device;
     TextView tv_trigger;
@@ -55,6 +60,55 @@ public class AddNotif extends Activity {
 
         Button cancel_btn = (Button) findViewById(R.id.cancel_button_an);
         Button ok_btn = (Button) findViewById(R.id.submit_button_an);
+
+        final CheckBox continuous_cb = (CheckBox) findViewById(R.id.continuous_cb);
+        final CheckBox onChange_cb = (CheckBox) findViewById(R.id.onChange_cb);
+
+        ImageButton info_ib = (ImageButton) findViewById(R.id.info_ib);
+
+        info_ib.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(AddNotif.this)
+                        .setTitle("On Change")
+                        .setMessage("This option will set the notification to only send an alarm when the target Aqua changes from a non-triggered state to a triggered one.")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+            }
+        });
+
+        continuous_cb.setChecked(true);
+
+        continuous_cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    onChange_cb.setChecked(false);
+                    continuous = true;
+                    notif_sentence.setText(getNewNotifSentenceAndUpdateServerVars());
+                }
+            }
+        });
+
+        onChange_cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    continuous_cb.setChecked(false);
+                    continuous = false;
+                    notif_sentence.setText(getNewNotifSentenceAndUpdateServerVars());
+                }
+            }
+        });
 
         tv_device = (TextView) findViewById(R.id.device_tv);
         tv_trigger = (TextView) findViewById(R.id.trigger_tv);
@@ -101,6 +155,7 @@ public class AddNotif extends Activity {
                             notif_data.put("ntfuuid", uuid);
                             notif_data.put("target", trg);
                             notif_data.put("trigger", triggerType);
+                            notif_data.put("continuous", String.valueOf(continuous_cb.isChecked()));
                             //notif_data.put("anid", "12312351235");
                             if ((triggerType.equalsIgnoreCase("entersGeo")) || (triggerType.equalsIgnoreCase("exitsGeo"))) {
                                 String geo_settings = aqua_shared_prefs.getString("!geo_" + geo + "_settings", "Not Found");
@@ -133,6 +188,7 @@ public class AddNotif extends Activity {
                             outgoing_json.put("iid", iid);
                             outgoing_json.put("aquakey", aquakey);
                             outgoing_json.put("data", notif_data);
+                            outgoing_json.put("continuous", String.valueOf(continuous_cb.isChecked()));
 
                             new QServerConnect(a, false, new QServerConnect.AsyncResponse() {
 
@@ -233,8 +289,13 @@ public class AddNotif extends Activity {
         String alm_buf;
         String trg_buf;
 
+        String cont_geo = "is inside ";
+
+        String start = "Whenever ";
+
         if (trig.isEmpty()) triggerType = "Unk";
         else if (trig.startsWith("low")) {
+            if (continuous) start = "Whenever ";
             triggerType = "lowBattery";
         } else if (trig.startsWith("enter")) {
             triggerType = "entersGeo";
@@ -260,15 +321,41 @@ public class AddNotif extends Activity {
             else dev_buf = dev;
         if (trig.isEmpty()) trig_buf = " <?>";
         else if (trig.equalsIgnoreCase("low battery")) {
-            trig_buf = "'s battery is low";
-        } else trig_buf = " " + trig;
+            if (continuous) trig_buf = "'s battery is low";
+            else trig_buf = "'s battery changes to low";
+        } else if (trig.startsWith("enter")) {
+            if (continuous) trig_buf = " is inside \"" + geo + "\"";
+            else trig_buf = " " + trig;
+        } else if (trig.startsWith("exit")) {
+            if (continuous) trig_buf = " is outside \"" + geo + "\"";
+            else trig_buf = " " + trig;
+        } else if (trig.startsWith("sees")) {
+            if (continuous) {
+                trig_buf = " can see " + mac;
+            }
+            else {
+                start = "When ";
+                trig_buf = " gains sight of " + mac;
+            }
+        } else if (trig.startsWith("starts")) {
+            if (continuous) trig_buf = " moves";
+            else {
+                trig_buf = " begins moving";
+            }
+        } else if (trig.startsWith("stops")) {
+            if (continuous) trig_buf = " is stopped";
+            else {
+                trig_buf = " stops";
+            }
+        }
+        else trig_buf = " " + trig;
         if (alm.isEmpty()) alm_buf = "a <?>";
             else if (alm.equalsIgnoreCase("text")) alm_buf = "a text.";
             else alm_buf = "an e-mail.";
         if (trg.isEmpty()) trg_buf = "<?>";
             else trg_buf = trg;
 
-        String full_sentence = "When " + dev_buf + trig_buf + ", send " + trg_buf + " " + alm_buf;
+        String full_sentence = start + dev_buf + trig_buf + ", send " + trg_buf + " " + alm_buf;
 
         return full_sentence;
     }

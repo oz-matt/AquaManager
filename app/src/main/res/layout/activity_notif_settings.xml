@@ -94,10 +94,10 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Alert"
         android:id="@+id/ni_alert_tv"
+        android:layout_marginTop="63dp"
         android:layout_below="@+id/ni_geofence_tv"
         android:layout_alignLeft="@+id/ni_geofence_tv"
-        android:layout_alignStart="@+id/ni_geofence_tv"
-        android:layout_marginTop="32dp" />
+        android:layout_alignStart="@+id/ni_geofence_tv" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -152,4 +152,23 @@
         android:layout_below="@+id/ni_alerttarget_tve"
         android:layout_alignRight="@+id/ni_alerttarget_tve"
         android:layout_marginTop="32dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Trigger Frequency"
+        android:id="@+id/conttv"
+        android:layout_below="@+id/ni_geofence_tv"
+        android:layout_alignLeft="@+id/ni_geofence_tv"
+        android:layout_alignStart="@+id/ni_geofence_tv" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/trig_freq"
+        android:layout_below="@+id/ni_geofence_tve"
+        android:layout_alignRight="@+id/ni_geofence_tve"
+        android:layout_alignEnd="@+id/ni_geofence_tve" />
 </RelativeLayout>
