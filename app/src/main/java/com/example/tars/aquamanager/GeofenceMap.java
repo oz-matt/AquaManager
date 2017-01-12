@@ -385,9 +385,9 @@ public class GeofenceMap extends FragmentActivity implements OnMapReadyCallback,
                     JSONArray box_json_array = new JSONArray();
 
                     for (int i = 0; i<8; i++) {
-                        JSONObject lat_lang = new JSONObject();
-                        lat_lang.put("lat", box_latlngs.get(i).latitude);
-                        lat_lang.put("lon", box_latlngs.get(i).longitude);
+                        JSONArray lat_lang = new JSONArray();
+                        lat_lang.put(box_latlngs.get(i).latitude);
+                        lat_lang.put(box_latlngs.get(i).longitude);
                         box_json_array.put(i, lat_lang);
                     }
 

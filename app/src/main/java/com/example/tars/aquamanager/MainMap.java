@@ -434,9 +434,9 @@ public class MainMap extends FragmentActivity implements OnMapReadyCallback, Goo
                     JSONArray latlng_array = new JSONArray(settings_obj.getString("geodata"));
 
                     for (int i = 0; i<latlng_array.length(); i++) {
-                        JSONObject latlng_obj = latlng_array.getJSONObject(i);
-                        String lat = latlng_obj.getString("lat");
-                        String lon = latlng_obj.getString("lon");
+                        JSONArray latlng_inner_arr = latlng_array.getJSONArray(i);
+                        String lat = latlng_inner_arr.getString(0);
+                        String lon = latlng_inner_arr.getString(1);
                         LatLng ll = new LatLng(Double.parseDouble(lat), Double.parseDouble(lon));
                         box_latlngs.add(i, ll);
                     }

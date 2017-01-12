@@ -133,7 +133,6 @@ import java.util.UUID;
  */
 public class AquaUtil {
 
-    //public static int check=0;
     public static int checkgeo=0;
 
     public static void initialSharedPrefSetup(Context context) {

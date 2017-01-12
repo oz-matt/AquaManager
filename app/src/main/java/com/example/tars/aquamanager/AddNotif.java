@@ -168,8 +168,14 @@ public class AddNotif extends Activity {
 
                                 if (type.equalsIgnoreCase("circle")) {
                                     String data = geo_settings_json.get("geodata").toString();
+                                    JSONArray geo_circle_array = new JSONArray();
+
+                                    geo_circle_array.put(0, geo_settings_json.get("lat"));
+                                    geo_circle_array.put(1, geo_settings_json.get("lon"));
+                                    geo_circle_array.put(2, data);
+
                                     notif_data.put("geotype", type);
-                                    notif_data.put("geodata", data);
+                                    notif_data.put("geodata", geo_circle_array);
                                     notif_data.put("geoname", geo);
                                 } else {
                                     final JSONArray geo_poly_array = new JSONArray(geo_settings_json.get("geodata").toString());
