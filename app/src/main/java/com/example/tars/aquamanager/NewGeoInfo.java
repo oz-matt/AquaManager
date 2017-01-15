@@ -77,17 +77,31 @@ public class NewGeoInfo extends Activity {
                 String name = edit_geo_name.getText().toString();
                 String rad = edit_geo_rad.getText().toString();
 
-                if (name.isEmpty()) Toast.makeText(getApplicationContext(), "Please enter a name", Toast.LENGTH_SHORT).show();
-                else if (rad.isEmpty()) Toast.makeText(getApplicationContext(), "Please enter a radius", Toast.LENGTH_SHORT).show();
-                else if (name.length() > 15) Toast.makeText(getApplicationContext(), "Name too long", Toast.LENGTH_SHORT).show();
-                else {
-                    if (circle_checkbox.isChecked()) {
-                        GeofenceMap.geofenceAddCircleAndName(Double.parseDouble(rad), name);
-                        finish();
-                    } else if (polygon_checkbox.isChecked()) {
-                        GeofenceMap.geofenceAddPolygonAndName(Double.parseDouble(rad), name);
-                        finish();
+                String isNameGood = AquaUtil.newGeoNameIsAcceptable(name, getBaseContext());
+
+                if (isNameGood.equalsIgnoreCase("Good")) {
+
+                    if (name.isEmpty())
+                        Toast.makeText(getApplicationContext(), "Please enter a name", Toast.LENGTH_SHORT).show();
+                    else if (rad.isEmpty())
+                        Toast.makeText(getApplicationContext(), "Please enter a radius", Toast.LENGTH_SHORT).show();
+                    else if (name.length() > 15)
+                        Toast.makeText(getApplicationContext(), "Name too long", Toast.LENGTH_SHORT).show();
+                    else {
+                        if (circle_checkbox.isChecked()) {
+                            GeofenceMap.geofenceAddCircleAndName(Double.parseDouble(rad), name);
+                            finish();
+                        } else if (polygon_checkbox.isChecked()) {
+                            GeofenceMap.geofenceAddPolygonAndName(Double.parseDouble(rad), name);
+                            finish();
+                        }
                     }
+                } else if (isNameGood.equalsIgnoreCase("NameExists")) {
+                    Toast.makeText(getBaseContext(), "Name exists", Toast.LENGTH_SHORT).show();
+                } else if (isNameGood.equalsIgnoreCase("TooShort")) {
+                    Toast.makeText(getBaseContext(), "Name too short", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getBaseContext(), "Error 108", Toast.LENGTH_SHORT).show();
                 }
             }
         });

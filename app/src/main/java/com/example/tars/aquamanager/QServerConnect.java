@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -55,6 +56,7 @@ public class QServerConnect extends AsyncTask<JSONObject, JSONObject, String[]> 
     }
 
     protected void onPreExecute() {
+        this.mDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         this.mDialog.show();
         this.mDialog.setContentView(R.layout.progressdialog);
         this.mDialog.getWindow().setGravity(Gravity.CENTER);
@@ -200,14 +202,14 @@ public class QServerConnect extends AsyncTask<JSONObject, JSONObject, String[]> 
                 }
 
             }
-            String[] retu = {response, "<no data>", "<no data>", pct_batt};
+            String[] retu = {response, "<no data>", "<no data>", "<no data>", pct_batt};
             return retu;
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        String[] retu = {"failed", "", "", ""};
+        String[] retu = {"failed", "", "", "", ""};
 
         return retu;
     }

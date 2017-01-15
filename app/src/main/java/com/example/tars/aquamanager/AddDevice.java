@@ -137,26 +137,21 @@ public class AddDevice extends Activity implements QServerConnect.AsyncResponse{
                                             dummy.put("pass", user_entered_passcode);
                                             dummy.put("aquaid", user_entered_aquaid);
 
-                                            Log.d("dcdq", dummy.toString());
-
                                             String aqsens = response_json.getString("aqsens");
 
                                             String qdata = response_json.getString("qdata");
 
-                                            Log.d("dcd", aqsens);
-
-                                            Intent intent = new Intent(a, NewDevice.class);
+                                            Intent intent = new Intent(AddDevice.this, NewDevice.class);
                                             intent.putExtra("qdata", qdata);
                                             intent.putExtra("aqsens", aqsens);
-                                            Log.d("test2", output[1]);
                                             intent.putExtra("loc", output[1]);
                                             intent.putExtra("fullsettings", output[2]);
                                             intent.putExtra("prevloclong", output[3]);
                                             intent.putExtra("batt", output[4]);
 
-                                            finish();
-
                                             startActivity(intent);
+
+                                            finish();
 
                                         } else {
                                             Toast.makeText(getBaseContext(), "Authentication Failed", Toast.LENGTH_SHORT).show();

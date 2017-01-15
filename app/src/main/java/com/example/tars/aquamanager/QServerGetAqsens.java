@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.Gravity;
@@ -42,6 +43,7 @@ public class QServerGetAqsens extends AsyncTask<String, String, String> {
     }
 
     protected void onPreExecute() {
+        this.mDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         this.mDialog.show();
         this.mDialog.setContentView(R.layout.progressdialog);
         this.mDialog.getWindow().setGravity(Gravity.CENTER);

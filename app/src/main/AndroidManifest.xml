@@ -64,12 +64,12 @@
             android:label="@string/title_activity_home_geofences" />
         <activity
             android:name=".GeofenceMap"
-            android:label="@string/title_activity_geofence_map" />
+            android:label="@string/title_activity_geofence_map"
+            android:configChanges="orientation|screenSize"/>
         <activity
             android:name=".NewGeoInfo"
             android:label="@string/title_activity_new_geo_info"
             android:noHistory="true"
-            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Holo.Dialog" />
         <activity
             android:name=".GetLocationOnly"

@@ -2,10 +2,12 @@ package com.example.tars.aquamanager;
 
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
+import android.view.Gravity;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -40,10 +42,14 @@ public class GetLocationOnly extends AsyncTask<String, JSONObject, String> {
     public GetLocationOnly(Activity context) {
         mContext = context;
         mDialog = new ProgressDialog(context);
+        this.mDialog.setCancelable(false);
     }
 
     protected void onPreExecute() {
+        this.mDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         this.mDialog.show();
+        this.mDialog.setContentView(R.layout.progressdialog);
+        this.mDialog.getWindow().setGravity(Gravity.CENTER);
     }
 
     protected String doInBackground(final String... input) {
@@ -65,14 +71,25 @@ public class GetLocationOnly extends AsyncTask<String, JSONObject, String> {
             //If geotype = polygon, geodata = a List<LatLng> of 8 points.
 
             JSONObject ret = getLocation(lat, lon);
+            Log.d("loc123", ret.toString());
             JSONObject location;
             String location_string = "";
 
-            location = ret.getJSONArray("results").getJSONObject(2);
-            location_string = location.getString("formatted_address");
-            Log.d("test", "formatted address:" + location_string);
+            if (ret.getJSONArray("results").length() > 0) {
+                location = ret.getJSONArray("results").getJSONObject(2);
+                location_string = location.getString("formatted_address");
+                Log.d("test", "formatted address:" + location_string);
 
-            return location_string;
+                return location_string;
+            } else {
+                JSONObject ret_nat = getNaturalLocation(lat, lon);
+                Log.d("ret_nat", ret.toString());
+                if (ret.getJSONArray("results").length() > 0) {
+
+                }
+
+                return "error";
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -92,7 +109,7 @@ public class GetLocationOnly extends AsyncTask<String, JSONObject, String> {
 
             if (result.equalsIgnoreCase("error")) {
                 Toast.makeText(mContext, "Error Getting Location", Toast.LENGTH_SHORT).show();
-                geo_settings.put("location", "<???>");
+                geo_settings.put("location", "Uncharted");
             } else {
                 geo_settings.put("location", result);
             }
@@ -121,6 +138,41 @@ public class GetLocationOnly extends AsyncTask<String, JSONObject, String> {
 
         try {
             URL url = new URL("http://maps.google.com/maps/api/geocode/json?latlng="+lat+","+lon+"&sensor=true");
+            urlConnection = (HttpURLConnection) url.openConnection();
+            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                result.append(line);
+            }
+
+            urlConnection.disconnect();
+
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject = new JSONObject(result.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return jsonObject;
+
+        } catch( Exception e) {
+            e.printStackTrace();
+
+            urlConnection.disconnect();
+        }
+
+        return null;
+    }
+
+    private static JSONObject getNaturalLocation (double lat, double lon) {
+
+        StringBuilder result = new StringBuilder();
+
+        try {
+            URL url = new URL("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lon + "&result_type=natural_feature&key=AIzaSyB8o5GaUMIgkV4mORr-UdXo7_bVavdm1nE");
             urlConnection = (HttpURLConnection) url.openConnection();
             InputStream in = new BufferedInputStream(urlConnection.getInputStream());
 

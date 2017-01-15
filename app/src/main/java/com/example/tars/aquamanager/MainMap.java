@@ -8,7 +8,11 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -118,20 +122,22 @@ public class MainMap extends FragmentActivity implements OnMapReadyCallback, Goo
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-            if (marker.getTitle().contains("@")) {
-                String[] full_marker_data = marker.getTitle().split("@");
+                if (marker.getTitle() != null && !marker.getTitle().isEmpty()) {
+                    if (marker.getTitle().contains("@")) {
+                        String[] full_marker_data = marker.getTitle().split("@");
 
-                String aqsen_pref = full_marker_data[4];
-                String aqsen_ele = full_marker_data[5];
+                        String aqsen_pref = full_marker_data[4];
+                        String aqsen_ele = full_marker_data[5];
 
-                Log.d("Mydata7", aqsen_pref);
-                Log.d("Mydata8", aqsen_ele);
+                        Log.d("Mydata7", aqsen_pref);
+                        Log.d("Mydata8", aqsen_ele);
 
-                Intent intent = new Intent(mContext, ViewRawData.class);
-                intent.putExtra("aqsens_pref", aqsen_pref);
-                intent.putExtra("aqsens_ele", Integer.parseInt(aqsen_ele));
-                mContext.startActivity(intent);
-            }
+                        Intent intent = new Intent(mContext, ViewRawData.class);
+                        intent.putExtra("aqsens_pref", aqsen_pref);
+                        intent.putExtra("aqsens_ele", Integer.parseInt(aqsen_ele));
+                        mContext.startActivity(intent);
+                    }
+                }
             }
         });
 
@@ -364,7 +370,7 @@ public class MainMap extends FragmentActivity implements OnMapReadyCallback, Goo
                 if (aqsens_json_array.length() < num_markers) num_markers = aqsens_json_array.length();
                 Log.d("num6", String.valueOf(num_markers));
 
-                for (int i = 0; i < num_markers; i++) {
+                for (int i = 1; i < num_markers; i++) {
                     JSONObject this_aqsens_element = aqsens_json_array.getJSONObject(i);
                     JSONObject this_elements_gpsminimum = this_aqsens_element.getJSONObject("gpsminimum");
                     JSONObject this_elements_sensors = this_aqsens_element.getJSONObject("sensors");
@@ -382,10 +388,34 @@ public class MainMap extends FragmentActivity implements OnMapReadyCallback, Goo
                     String full_marker_data = datetime + "@" + speed + "@" + numsat + "@" + batt + "@" + aqsens_pref + "@" + aqsens_ele;
 
                     LatLng markerSpot = new LatLng(lat, lon);
-                    Marker marker = mMap.addMarker(new MarkerOptions().position(markerSpot).title(full_marker_data).snippet("Going x mph").icon(BitmapDescriptorFactory.defaultMarker(getMarkerColor(this_devices_marker_color))));
-                    float step = (0.7f) / (aqsens_json_array.length());
+                    Marker marker = mMap.addMarker(new MarkerOptions().position(markerSpot).title(full_marker_data).snippet("Going x mph").icon(BitmapDescriptorFactory.fromBitmap(writeTextOnDrawable(getMarkerColor(this_devices_marker_color), String.valueOf(i+1)))));
+
+                    float step = (0.7f) / (num_markers);
                     marker.setAlpha(1 - (step * i));
                     markers.add(marker);
+                }
+
+                if (num_markers >= 1) {
+                    JSONObject this_aqsens_element = aqsens_json_array.getJSONObject(0);
+                    JSONObject this_elements_gpsminimum = this_aqsens_element.getJSONObject("gpsminimum");
+                    JSONObject this_elements_sensors = this_aqsens_element.getJSONObject("sensors");
+                    Double lat = Double.parseDouble(this_elements_gpsminimum.getString("lat"));
+                    Double lon = Double.parseDouble(this_elements_gpsminimum.getString("lon"));
+
+                    String datetime = this_elements_gpsminimum.getString("time");
+                    String speed = this_elements_gpsminimum.getString("gspeed");
+                    String numsat = this_elements_gpsminimum.getString("numsat");
+                    String batt = this_elements_sensors.getString("pct_battery");
+
+                    String aqsens_pref = "!dev_" + name + "_aqsens";
+                    String aqsens_ele = "0";
+
+                    String full_marker_data = datetime + "@" + speed + "@" + numsat + "@" + batt + "@" + aqsens_pref + "@" + aqsens_ele;
+
+                    LatLng markerSpot = new LatLng(lat, lon);
+                    Marker marker = mMap.addMarker(new MarkerOptions().position(markerSpot).title(full_marker_data).snippet("Going x mph").icon(BitmapDescriptorFactory.fromBitmap(writeTextOnDrawable(getMarkerColor(this_devices_marker_color), String.valueOf(1)))));
+                    Marker markerLatest = mMap.addMarker(new MarkerOptions().position(markerSpot).title("Latest position of " + name).icon(BitmapDescriptorFactory.fromResource(R.drawable.firstmarker)));
+                    markers.add(markerLatest);
                 }
 
             } catch (Exception e) {
@@ -393,6 +423,18 @@ public class MainMap extends FragmentActivity implements OnMapReadyCallback, Goo
                 Toast.makeText(this, "JSON Aqsens Error", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private int getMarkerColor(String color) {
+        if (color.equalsIgnoreCase("RED")) return R.drawable.red_marker;
+        if (color.equalsIgnoreCase("BLUE")) return R.drawable.blue_marker;
+        if (color.equalsIgnoreCase("GREEN")) return R.drawable.green_marker;
+        if (color.equalsIgnoreCase("ORANGE")) return R.drawable.orange_marker;
+        if (color.equalsIgnoreCase("VIOLET")) return R.drawable.violet_marker;
+        if (color.equalsIgnoreCase("ROSE")) return R.drawable.rose_marker;
+        if (color.equalsIgnoreCase("MAGENTA")) return R.drawable.magenta_marker;
+        if (color.equalsIgnoreCase("AZURE")) return R.drawable.azure_marker;
+        return R.drawable.azure_marker;
     }
 
     private void populateMarkersForGeofencesInGeos_To_PopulateList() {
@@ -584,18 +626,6 @@ public class MainMap extends FragmentActivity implements OnMapReadyCallback, Goo
         populateMarkersForGeofencesInGeos_To_PopulateList();
     }
 
-    private float getMarkerColor(String color) {
-        if (color.equalsIgnoreCase("RED")) return BitmapDescriptorFactory.HUE_RED;
-        if (color.equalsIgnoreCase("BLUE")) return BitmapDescriptorFactory.HUE_BLUE;
-        if (color.equalsIgnoreCase("GREEN")) return BitmapDescriptorFactory.HUE_GREEN;
-        if (color.equalsIgnoreCase("ORANGE")) return BitmapDescriptorFactory.HUE_ORANGE;
-        if (color.equalsIgnoreCase("VIOLET")) return BitmapDescriptorFactory.HUE_VIOLET;
-        if (color.equalsIgnoreCase("ROSE")) return BitmapDescriptorFactory.HUE_ROSE;
-        if (color.equalsIgnoreCase("MAGENTA")) return BitmapDescriptorFactory.HUE_MAGENTA;
-        if (color.equalsIgnoreCase("AZURE")) return BitmapDescriptorFactory.HUE_AZURE;
-        return BitmapDescriptorFactory.HUE_YELLOW;
-    }
-
     private boolean settingsAllowGeofencesToBeShownOnWorldMap() {
         final SharedPreferences aqua_shared_prefs = this.getSharedPreferences("aqua_shared_prefs", this.MODE_PRIVATE);
         boolean showGeos = aqua_shared_prefs.getBoolean("!set_showGeos", false);
@@ -661,121 +691,171 @@ public class MainMap extends FragmentActivity implements OnMapReadyCallback, Goo
     private View prepareInfoView(Marker marker){
 
         String title = marker.getTitle();
+        if (title != null && !title.isEmpty()) {
+            if (title.contains("@")) {
 
-        if (title.contains("@")) {
+                //prepare InfoView programmatically
+                LinearLayout infoView = new LinearLayout(MainMap.this);
+                LinearLayout.LayoutParams infoViewParams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                infoView.setOrientation(LinearLayout.HORIZONTAL);
+                infoView.setLayoutParams(infoViewParams);
 
-            //prepare InfoView programmatically
-            LinearLayout infoView = new LinearLayout(MainMap.this);
-            LinearLayout.LayoutParams infoViewParams = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            infoView.setOrientation(LinearLayout.HORIZONTAL);
-            infoView.setLayoutParams(infoViewParams);
-
-            ImageButton infoImageView = new ImageButton(MainMap.this);
-            //Drawable drawable = getResources().getDrawable(R.mipmap.ic_launcher);
-            LinearLayout.LayoutParams btnParams = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
-            //btnParams.addRule(RelativeLayout.CENTER_VERTICAL);
-            infoImageView.setLayoutParams(btnParams);
-            infoImageView.setBackgroundColor(getResources().getColor(R.color.white));
-            Drawable drawable = getResources().getDrawable(R.drawable.paper_blu);
-            Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
-            Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, (int) AquaUtil.convertDpToPixel(35, mContext), (int) AquaUtil.convertDpToPixel(35, mContext), true));
-            infoImageView.setImageDrawable(d);
-            infoImageView.setPadding(0, 0, 8, 0);
+                ImageButton infoImageView = new ImageButton(MainMap.this);
+                //Drawable drawable = getResources().getDrawable(R.mipmap.ic_launcher);
+                LinearLayout.LayoutParams btnParams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
+                //btnParams.addRule(RelativeLayout.CENTER_VERTICAL);
+                infoImageView.setLayoutParams(btnParams);
+                infoImageView.setBackgroundColor(getResources().getColor(R.color.white));
+                Drawable drawable = getResources().getDrawable(R.drawable.paper_blu);
+                Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+                Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, (int) AquaUtil.convertDpToPixel(35, mContext), (int) AquaUtil.convertDpToPixel(35, mContext), true));
+                infoImageView.setImageDrawable(d);
+                infoImageView.setPadding(0, 0, 8, 0);
 
 
-            infoImageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(mContext, "click!", Toast.LENGTH_SHORT).show();
+                infoImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(mContext, "click!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                RelativeLayout rl = new RelativeLayout(MainMap.this);
+                RelativeLayout.LayoutParams rlParams = new RelativeLayout.LayoutParams(
+                        RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                rlParams.addRule(RelativeLayout.CENTER_VERTICAL);
+                rl.setLayoutParams(rlParams);
+
+                rl.addView(infoImageView);
+
+                infoView.addView(rl);
+
+                RelativeLayout vw = new RelativeLayout(MainMap.this);
+                //vw.setGravity(Gravity.CENTER_VERTICAL);
+                vw.setBackgroundColor(getResources().getColor(R.color.holoBlueDark));
+                RelativeLayout.LayoutParams row_lp = new RelativeLayout.LayoutParams(4, RelativeLayout.LayoutParams.MATCH_PARENT);
+                row_lp.addRule(RelativeLayout.CENTER_VERTICAL);
+                vw.setPadding(0, 7, 4, 0);
+                infoView.addView(vw, row_lp);
+
+                LinearLayout subInfoView = new LinearLayout(MainMap.this);
+                LinearLayout.LayoutParams subInfoViewParams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                subInfoView.setOrientation(LinearLayout.VERTICAL);
+                subInfoView.setLayoutParams(subInfoViewParams);
+
+                String[] full_marker_data = marker.getTitle().split("@");
+
+                String datetime_str_un = full_marker_data[0];
+                String datetime_str_editted = datetime_str_un.split("\\.")[0] + "Z";
+                String speed = full_marker_data[1];
+                String numsat = full_marker_data[2];
+                String batt = full_marker_data[3];
+
+                SimpleDateFormat dfp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+                dfp.setTimeZone(TimeZone.getTimeZone("GMT"));
+
+                String try_time_str = "<no data>";
+
+                Log.d("Mydata4", marker.getTitle());
+                Log.d("Mydata1", datetime_str_un);
+                Log.d("Mydata", datetime_str_editted);
+
+                try {
+                    Date formatted_date = dfp.parse(datetime_str_editted);
+                    try_time_str = formatted_date.toString();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(mContext, "Date Parse Error 102", Toast.LENGTH_SHORT).show();
                 }
-            });
+                TextView subInfo1 = new TextView(MainMap.this);
+                subInfo1.setText(try_time_str);
+                subInfo1.setTextColor(getResources().getColor(R.color.holoBlueDark));
+                TextView subInfo2 = new TextView(MainMap.this);
+                subInfo2.setText("Going " + speed + "mph");
+                subInfo2.setTextColor(getResources().getColor(R.color.holoBlueDark));
+                subInfo2.setPadding(8, 0, 0, 0);
+                subInfo1.setPadding(8, 0, 0, 0);
 
-            RelativeLayout rl = new RelativeLayout(MainMap.this);
-            RelativeLayout.LayoutParams rlParams = new RelativeLayout.LayoutParams(
-                    RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-            rlParams.addRule(RelativeLayout.CENTER_VERTICAL);
-            rl.setLayoutParams(rlParams);
+                TextView subInfo3 = new TextView(MainMap.this);
+                subInfo3.setText(numsat + " satellites in view");
+                subInfo3.setTextColor(getResources().getColor(R.color.holoBlueDark));
+                subInfo3.setPadding(8, 0, 0, 0);
 
-            rl.addView(infoImageView);
+                TextView subInfo4 = new TextView(MainMap.this);
+                subInfo4.setText(batt + "% battery");
+                subInfo4.setTextColor(getResources().getColor(R.color.holoBlueDark));
+                subInfo4.setPadding(8, 0, 0, 0);
 
-            infoView.addView(rl);
+                subInfoView.addView(subInfo1);
+                subInfoView.addView(subInfo2);
+                subInfoView.addView(subInfo3);
+                subInfoView.addView(subInfo4);
 
-            RelativeLayout vw = new RelativeLayout(MainMap.this);
-            //vw.setGravity(Gravity.CENTER_VERTICAL);
-            vw.setBackgroundColor(getResources().getColor(R.color.holoBlueDark));
-            RelativeLayout.LayoutParams row_lp = new RelativeLayout.LayoutParams(4, RelativeLayout.LayoutParams.MATCH_PARENT);
-            row_lp.addRule(RelativeLayout.CENTER_VERTICAL);
-            vw.setPadding(0, 7, 4, 0);
-            infoView.addView(vw, row_lp);
+                infoView.addView(subInfoView);
 
-            LinearLayout subInfoView = new LinearLayout(MainMap.this);
-            LinearLayout.LayoutParams subInfoViewParams = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            subInfoView.setOrientation(LinearLayout.VERTICAL);
-            subInfoView.setLayoutParams(subInfoViewParams);
+                return infoView;
 
-            String[] full_marker_data = marker.getTitle().split("@");
+            } else if (title.contains(" ")) {
+                TextView geotv = new TextView(MainMap.this);
+                geotv.setText(title);
+                geotv.setTextColor(getResources().getColor(R.color.holoBlueDark));
 
-            String datetime_str_un = full_marker_data[0];
-            String datetime_str_editted = datetime_str_un.split("\\.")[0] + "Z";
-            String speed = full_marker_data[1];
-            String numsat = full_marker_data[2];
-            String batt = full_marker_data[3];
+                return geotv;
+            } else {
+                TextView geotv = new TextView(MainMap.this);
+                String cat_geo_title = "Geofence: '" + title + "'";
+                geotv.setText(cat_geo_title);
+                geotv.setTextColor(getResources().getColor(R.color.holoBlueDark));
 
-            SimpleDateFormat dfp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-            dfp.setTimeZone(TimeZone.getTimeZone("GMT"));
-
-            String try_time_str = "<no data>";
-
-            Log.d("Mydata4", marker.getTitle());
-            Log.d("Mydata1", datetime_str_un);
-            Log.d("Mydata", datetime_str_editted);
-
-            try {
-                Date formatted_date = dfp.parse(datetime_str_editted);
-                try_time_str = formatted_date.toString();
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(mContext, "Date Parse Error 102", Toast.LENGTH_SHORT).show();
+                return geotv;
             }
-            TextView subInfo1 = new TextView(MainMap.this);
-            subInfo1.setText(try_time_str);
-            subInfo1.setTextColor(getResources().getColor(R.color.holoBlueDark));
-            TextView subInfo2 = new TextView(MainMap.this);
-            subInfo2.setText("Going " + speed + "mph");
-            subInfo2.setTextColor(getResources().getColor(R.color.holoBlueDark));
-            subInfo2.setPadding(8, 0, 0, 0);
-            subInfo1.setPadding(8, 0, 0, 0);
-
-            TextView subInfo3 = new TextView(MainMap.this);
-            subInfo3.setText(numsat + " satellites in view");
-            subInfo3.setTextColor(getResources().getColor(R.color.holoBlueDark));
-            subInfo3.setPadding(8, 0, 0, 0);
-
-            TextView subInfo4 = new TextView(MainMap.this);
-            subInfo4.setText(batt + "% battery");
-            subInfo4.setTextColor(getResources().getColor(R.color.holoBlueDark));
-            subInfo4.setPadding(8, 0, 0, 0);
-
-            subInfoView.addView(subInfo1);
-            subInfoView.addView(subInfo2);
-            subInfoView.addView(subInfo3);
-            subInfoView.addView(subInfo4);
-
-            infoView.addView(subInfoView);
-
-            return infoView;
-
-        } else {
-            TextView geotv = new TextView(MainMap.this);
-            String cat_geo_title = "Geofence: '" + title + "'";
-            geotv.setText(cat_geo_title);
-            geotv.setTextColor(getResources().getColor(R.color.holoBlueDark));
-
-            return geotv;
         }
+        return null;
+    }
+
+    private Bitmap writeTextOnDrawable(int drawableId, String text) {
+
+        Bitmap bm = BitmapFactory.decodeResource(getResources(), drawableId)
+                .copy(Bitmap.Config.ARGB_8888, true);
+
+        Integer mkrnum = Integer.valueOf(text);
+
+        int textsize;
+
+        if (mkrnum < 10) textsize = 18;
+        else if (mkrnum < 100) textsize = 15;
+        else textsize = 11;
+
+        Typeface tf = Typeface.create("Helvetica", Typeface.BOLD);
+
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(Color.WHITE);
+        paint.setTypeface(tf);
+        paint.setTextAlign(Paint.Align.CENTER);
+        paint.setTextSize(AquaUtil.convertDpToPixel(textsize,getBaseContext()));
+
+        Rect textRect = new Rect();
+        paint.getTextBounds(text, 0, text.length(), textRect);
+
+        Canvas canvas = new Canvas(bm);
+
+        //If the text is bigger than the canvas , reduce the font size
+        if(textRect.width() >= (canvas.getWidth() - 4))     //the padding on either sides is considered as 4, so as to appropriately fit in the text
+            paint.setTextSize(AquaUtil.convertDpToPixel(11,getBaseContext()));        //Scaling needs to be used for different dpi's
+
+        //Calculate the positions
+        int xPos = (canvas.getWidth() / 2) - 1;     //-2 is for regulating the x position offset
+
+        //"- ((paint.descent() + paint.ascent()) / 2)" is the distance from the baseline to the center.
+        int yPos = (int) ((canvas.getHeight() / 2) - ((paint.descent() + paint.ascent()) / 2)) ;
+
+        canvas.drawText(text, xPos, yPos/1.5f, paint);
+
+        return  bm;
     }
 
 }

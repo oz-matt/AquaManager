@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
@@ -38,6 +40,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.UUID;
 
 /**
@@ -139,7 +142,7 @@ public class AquaUtil {
 
         SharedPreferences aqua_shared_prefs = context.getSharedPreferences("aqua_shared_prefs", context.MODE_PRIVATE);
 
-        aqua_shared_prefs.edit().clear().commit();
+        //aqua_shared_prefs.edit().clear().apply(); // For Debugging
 
         if (!aqua_shared_prefs.contains("!set_mapDisplayType")) {
             aqua_shared_prefs.edit().putInt("!set_mapDisplayType", 0).apply();
@@ -153,8 +156,8 @@ public class AquaUtil {
         if (!aqua_shared_prefs.contains("iid")) {
             String iid = UUID.randomUUID().toString();
             aqua_shared_prefs.edit().putString("iid", iid).apply();
+        }
 
-}
         if (!aqua_shared_prefs.contains("num_notifs")) {
             aqua_shared_prefs.edit().putInt("num_notifs", 0).apply();
         }
@@ -716,20 +719,31 @@ public class AquaUtil {
                 JSONObject latest_gps_minimum = latest_element.getJSONObject("gpsminimum");
                 String latest_datetime = latest_gps_minimum.getString("time");
 
+                JSONObject latest_sensors = latest_element.getJSONObject("sensors");
+                String update_rate = latest_sensors.getString("update_rate");
+                int update_rate_in_min = Integer.parseInt(update_rate);
+
+                int orange_threshold = update_rate_in_min * 60 * 1000 * 3;
+                int red_threshold = update_rate_in_min * 60 * 1000 * 6;
+
                 Date now = new Date();
                 Log.d("now", now.toString());
 
                 DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                df1.setTimeZone(TimeZone.getTimeZone("GMT"));
                 Date result1 = df1.parse(latest_datetime);
                 Log.d("aqua_pt", result1.toString());
+
+                Log.d("now2", String.valueOf(orange_threshold));
+                Log.d("now3", String.valueOf(red_threshold));
 
                 Long diff = now.getTime() - result1.getTime();
 
                 Log.d("now", diff.toString());
 
-                if (diff > 21600000) {
+                if (diff > red_threshold) {
                     return ContextCompat.getColor(context, R.color.noRecentUpdateRed);
-                } else if (diff > 7200000) {
+                } else if (diff > orange_threshold) {
                     return ContextCompat.getColor(context, R.color.semiRecentUpdateOrange);
                 } else {
                     return ContextCompat.getColor(context, R.color.recentUpdateGreen);
@@ -847,7 +861,7 @@ public class AquaUtil {
         return "Good";
     }
 
-    private static String newGeoNameIsAcceptable(String newname, Context context) {
+    public static String newGeoNameIsAcceptable(String newname, Context context) {
 
         if (newname.length() < 2) return "TooShort";
 
@@ -1123,5 +1137,4 @@ public class AquaUtil {
         }
         return true;
     }
-
 }

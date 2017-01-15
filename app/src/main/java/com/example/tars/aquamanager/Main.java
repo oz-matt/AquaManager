@@ -82,12 +82,10 @@ public class Main extends AppCompatActivity {
                 updateEveryDevicesAqsensElementAndRefreshTable(this);
                 break;
             case R.id.item_settings:
-                Toast.makeText(getBaseContext(), "Settings", Toast.LENGTH_SHORT).show();
                 Intent open_settings = new Intent(getApplicationContext(), Settings.class);
                 startActivity(open_settings);
                 break;
             case R.id.item_map:
-                Toast.makeText(getBaseContext(), "MainMap", Toast.LENGTH_SHORT).show();
                 Intent intent=new Intent(Main.this, MainMap.class);
                 intent.putExtra("populate_extra", "all");
                 startActivity(intent);

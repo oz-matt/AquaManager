@@ -117,17 +117,22 @@
 
         </RelativeLayout>
 
-        <RelativeLayout
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
-            android:background="@color/pureBlack">
+            android:id="@+id/scrollView5" >
 
-            <TableLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/dev_tl"></TableLayout>
-        </RelativeLayout>
+                android:layout_height="wrap_content"
+                android:background="@color/pureBlack">
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/dev_tl"></TableLayout>
+            </RelativeLayout>
+        </ScrollView>
 
     </LinearLayout>
 
