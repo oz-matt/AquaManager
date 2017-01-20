@@ -124,6 +124,9 @@ public class AddDevice extends Activity implements QServerConnect.AsyncResponse{
                                     Toast.makeText(getBaseContext(), "Network Error", Toast.LENGTH_SHORT).show();
                                 } else {
                                     Log.d("ServerResponse", output[0]);
+                                    Log.d("ServerResponse1", output[1]);
+                                    Log.d("ServerResponse3", output[2]);
+                                    Log.d("ServerResponse4", output[3]);
                                     try {
                                         JSONObject response_json = new JSONObject(output[0]);
 

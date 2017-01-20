@@ -63,196 +63,213 @@ public class DeviceSettings extends Activity {
 
         String[] fullsettingsblk = aqua_shared_prefs.getString("!dev_" + name + "_fullsettings", "Not Found").split("!");
 
-        String loc_str_long = fullsettingsblk[0];
-        String temp = fullsettingsblk[1];
-        String humidity = fullsettingsblk[2];
-        String height = fullsettingsblk[3];
-        String speed = fullsettingsblk[4];
-        String direction = fullsettingsblk[5];
-        String nums = fullsettingsblk[6];
 
-        String latest_time = fullsettingsblk[7];
-        String second_latest_time = fullsettingsblk[8];
+        if (fullsettingsblk.length > 1) {
 
-        putCurLoc.setText("Current Location\r\n(" + latest_time + ")");
-        putPrevLoc.setText("Previous Location\r\n(" + second_latest_time + ")");
+            Log.d("Tester1", name);
+            Log.d("Tester2", fullsettingsblk[0]);
+            Log.d("Tester2", fullsettingsblk[1]);
+            Log.d("Tester2", fullsettingsblk[2]);
+            Log.d("Tester2", fullsettingsblk[3]);
+            Log.d("Tester2", fullsettingsblk[4]);
+            Log.d("Tester2", fullsettingsblk[5]);
+            Log.d("Tester2", fullsettingsblk[6]);
+            Log.d("Tester2", fullsettingsblk[7]);
+            Log.d("Tester2", fullsettingsblk[8]);
 
-        Spinner colorspinner = (Spinner) findViewById(R.id.di_spinner);
+            String loc_str_long = fullsettingsblk[0];
+            String temp = fullsettingsblk[1];
+            String humidity = fullsettingsblk[2];
+            String height = fullsettingsblk[3];
+            String speed = fullsettingsblk[4];
+            String direction = fullsettingsblk[5];
+            String nums = fullsettingsblk[6];
 
-        ArrayList<String> spinnerArray = new ArrayList<String>();
-        spinnerArray.add("Red");
-        spinnerArray.add("Blue");
-        spinnerArray.add("Green");
-        spinnerArray.add("Orange");
-        spinnerArray.add("Violet");
-        spinnerArray.add("Rose");
-        spinnerArray.add("Magenta");
-        spinnerArray.add("Azure");
+            String latest_time = fullsettingsblk[7];
+            String second_latest_time = fullsettingsblk[8];
 
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, spinnerArray);
+            putCurLoc.setText("Current Location\r\n(" + latest_time + ")");
+            putPrevLoc.setText("Previous Location\r\n(" + second_latest_time + ")");
 
-        colorspinner.setPadding(8*den, 8*den, 8*den, 8*den);
-        colorspinner.setAdapter(spinnerArrayAdapter);
+            Spinner colorspinner = (Spinner) findViewById(R.id.di_spinner);
 
-        try {
-            JSONObject qdata = new JSONObject(aqua_shared_prefs.getString("!dev_" + name + "_qdata", "Not Found"));
+            ArrayList<String> spinnerArray = new ArrayList<String>();
+            spinnerArray.add("Red");
+            spinnerArray.add("Blue");
+            spinnerArray.add("Green");
+            spinnerArray.add("Orange");
+            spinnerArray.add("Violet");
+            spinnerArray.add("Rose");
+            spinnerArray.add("Magenta");
+            spinnerArray.add("Azure");
 
-            putName.setText(name);
+            ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, spinnerArray);
 
-            String bat = aqua_shared_prefs.getString("!dev_" + name + "_pctbat", "Not Found") + "%";
-            putBattery.setText(bat);
+            colorspinner.setPadding(8*den, 8*den, 8*den, 8*den);
+            colorspinner.setAdapter(spinnerArrayAdapter);
 
-            putCurrentLocation.setText(loc_str_long);
-            putPreviousLocation.setText(aqua_shared_prefs.getString("!dev_" + name + "_prevlocstrlong", "Not Found"));
+            try {
+                JSONObject qdata = new JSONObject(aqua_shared_prefs.getString("!dev_" + name + "_qdata", "Not Found"));
 
-            putAquaID.setText(qdata.getString("aquaid"));
-            putAquaKey.setText(qdata.getString("aquakey"));
-            putPhoneNo.setText(qdata.getString("phonenumber"));
+                putName.setText(name);
 
-            putTemp.setText(temp);
-            putHumidity.setText(humidity);
-            putHeight.setText(height);
-            putSpeed.setText(speed);
-            putDir.setText(direction);
-            putNumSats.setText(nums);
+                String bat = aqua_shared_prefs.getString("!dev_" + name + "_pctbat", "Not Found") + "%";
+                putBattery.setText(bat);
+
+                putCurrentLocation.setText(loc_str_long);
+                putPreviousLocation.setText(aqua_shared_prefs.getString("!dev_" + name + "_prevlocstrlong", "Not Found"));
+
+                putAquaID.setText(qdata.getString("aquaid"));
+                putAquaKey.setText(qdata.getString("aquakey"));
+                putPhoneNo.setText(qdata.getString("phonenumber"));
+
+                putTemp.setText(temp);
+                putHumidity.setText(humidity);
+                putHeight.setText(height);
+                putSpeed.setText(speed);
+                putDir.setText(direction);
+                putNumSats.setText(nums);
 
 
-            final JSONObject qsettings = new JSONObject(aqua_shared_prefs.getString("!dev_" + name + "_settings", "Not Found"));
-            String markerColor = qsettings.getString("MarkerColor");
+                final JSONObject qsettings = new JSONObject(aqua_shared_prefs.getString("!dev_" + name + "_settings", "Not Found"));
+                String markerColor = qsettings.getString("MarkerColor");
 
-            if (markerColor.equalsIgnoreCase("RED")) colorspinner.setSelection(0);
-            else if (markerColor.equalsIgnoreCase("BLUE")) colorspinner.setSelection(1);
-            else if (markerColor.equalsIgnoreCase("GREEN")) colorspinner.setSelection(2);
-            else if (markerColor.equalsIgnoreCase("ORANGE")) colorspinner.setSelection(3);
-            else if (markerColor.equalsIgnoreCase("VIOLET")) colorspinner.setSelection(4);
-            else if (markerColor.equalsIgnoreCase("ROSE")) colorspinner.setSelection(5);
-            else if (markerColor.equalsIgnoreCase("MAGENTA")) colorspinner.setSelection(6);
-            else if (markerColor.equalsIgnoreCase("AZURE")) colorspinner.setSelection(7);
+                if (markerColor.equalsIgnoreCase("RED")) colorspinner.setSelection(0);
+                else if (markerColor.equalsIgnoreCase("BLUE")) colorspinner.setSelection(1);
+                else if (markerColor.equalsIgnoreCase("GREEN")) colorspinner.setSelection(2);
+                else if (markerColor.equalsIgnoreCase("ORANGE")) colorspinner.setSelection(3);
+                else if (markerColor.equalsIgnoreCase("VIOLET")) colorspinner.setSelection(4);
+                else if (markerColor.equalsIgnoreCase("ROSE")) colorspinner.setSelection(5);
+                else if (markerColor.equalsIgnoreCase("MAGENTA")) colorspinner.setSelection(6);
+                else if (markerColor.equalsIgnoreCase("AZURE")) colorspinner.setSelection(7);
 
-            colorspinner.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    spinnerctr++;
-                    return false;
-                }
-            });
+                colorspinner.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        spinnerctr++;
+                        return false;
+                    }
+                });
 
-            colorspinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                colorspinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                    if (spinnerctr > 0) {
-                        switch (position) {
-                            case 0:
-                                try {
-                                    qsettings.remove("MarkerColor");
-                                    qsettings.put("MarkerColor", "RED");
-                                    aqua_shared_prefs.edit().remove("!dev_" + name + "_settings").apply();
-                                    aqua_shared_prefs.edit().putString("!dev_" + name + "_settings", qsettings.toString()).apply();
-                                    Toast.makeText(getBaseContext(), "Marker color changed to red", Toast.LENGTH_SHORT).show();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    Toast.makeText(getBaseContext(), "JSON Exception 108", Toast.LENGTH_SHORT).show();
-                                }
-                                break;
-                            case 1:
-                                try {
-                                    qsettings.remove("MarkerColor");
-                                    qsettings.put("MarkerColor", "BLUE");
-                                    aqua_shared_prefs.edit().remove("!dev_" + name + "_settings").apply();
-                                    aqua_shared_prefs.edit().putString("!dev_" + name + "_settings", qsettings.toString()).apply();
-                                    Toast.makeText(getBaseContext(), "Marker color changed to blue", Toast.LENGTH_SHORT).show();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    Toast.makeText(getBaseContext(), "JSON Exception 108", Toast.LENGTH_SHORT).show();
-                                }
-                                break;
-                            case 2:
-                                try {
-                                    qsettings.remove("MarkerColor");
-                                    qsettings.put("MarkerColor", "GREEN");
-                                    aqua_shared_prefs.edit().remove("!dev_" + name + "_settings").apply();
-                                    aqua_shared_prefs.edit().putString("!dev_" + name + "_settings", qsettings.toString()).apply();
-                                    Toast.makeText(getBaseContext(), "Marker color changed to green", Toast.LENGTH_SHORT).show();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    Toast.makeText(getBaseContext(), "JSON Exception 108", Toast.LENGTH_SHORT).show();
-                                }
-                                break;
-                            case 3:
-                                try {
-                                    qsettings.remove("MarkerColor");
-                                    qsettings.put("MarkerColor", "ORANGE");
-                                    aqua_shared_prefs.edit().remove("!dev_" + name + "_settings").apply();
-                                    aqua_shared_prefs.edit().putString("!dev_" + name + "_settings", qsettings.toString()).apply();
-                                    Toast.makeText(getBaseContext(), "Marker color changed to orange", Toast.LENGTH_SHORT).show();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    Toast.makeText(getBaseContext(), "JSON Exception 108", Toast.LENGTH_SHORT).show();
-                                }
-                                break;
-                            case 4:
-                                try {
-                                    qsettings.remove("MarkerColor");
-                                    qsettings.put("MarkerColor", "VIOLET");
-                                    aqua_shared_prefs.edit().remove("!dev_" + name + "_settings").apply();
-                                    aqua_shared_prefs.edit().putString("!dev_" + name + "_settings", qsettings.toString()).apply();
-                                    Toast.makeText(getBaseContext(), "Marker color changed to violet", Toast.LENGTH_SHORT).show();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    Toast.makeText(getBaseContext(), "JSON Exception 108", Toast.LENGTH_SHORT).show();
-                                }
-                                break;
-                            case 5:
-                                try {
-                                    qsettings.remove("MarkerColor");
-                                    qsettings.put("MarkerColor", "ROSE");
-                                    aqua_shared_prefs.edit().remove("!dev_" + name + "_settings").apply();
-                                    aqua_shared_prefs.edit().putString("!dev_" + name + "_settings", qsettings.toString()).apply();
-                                    Toast.makeText(getBaseContext(), "Marker color changed to rose", Toast.LENGTH_SHORT).show();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    Toast.makeText(getBaseContext(), "JSON Exception 108", Toast.LENGTH_SHORT).show();
-                                }
-                                break;
-                            case 6:
-                                try {
-                                    qsettings.remove("MarkerColor");
-                                    qsettings.put("MarkerColor", "MAGENTA");
-                                    aqua_shared_prefs.edit().remove("!dev_" + name + "_settings").apply();
-                                    aqua_shared_prefs.edit().putString("!dev_" + name + "_settings", qsettings.toString()).apply();
-                                    Toast.makeText(getBaseContext(), "Marker color changed to magenta", Toast.LENGTH_SHORT).show();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    Toast.makeText(getBaseContext(), "JSON Exception 108", Toast.LENGTH_SHORT).show();
-                                }
-                                break;
-                            case 7:
-                                try {
-                                    qsettings.remove("MarkerColor");
-                                    qsettings.put("MarkerColor", "AZURE");
-                                    aqua_shared_prefs.edit().remove("!dev_" + name + "_settings").apply();
-                                    aqua_shared_prefs.edit().putString("!dev_" + name + "_settings", qsettings.toString()).apply();
-                                    Toast.makeText(getBaseContext(), "Marker color changed to azure", Toast.LENGTH_SHORT).show();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    Toast.makeText(getBaseContext(), "JSON Exception 108", Toast.LENGTH_SHORT).show();
-                                }
-                                break;
+                        if (spinnerctr > 0) {
+                            switch (position) {
+                                case 0:
+                                    try {
+                                        qsettings.remove("MarkerColor");
+                                        qsettings.put("MarkerColor", "RED");
+                                        aqua_shared_prefs.edit().remove("!dev_" + name + "_settings").apply();
+                                        aqua_shared_prefs.edit().putString("!dev_" + name + "_settings", qsettings.toString()).apply();
+                                        Toast.makeText(getBaseContext(), "Marker color changed to red", Toast.LENGTH_SHORT).show();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(getBaseContext(), "JSON Exception 108", Toast.LENGTH_SHORT).show();
+                                    }
+                                    break;
+                                case 1:
+                                    try {
+                                        qsettings.remove("MarkerColor");
+                                        qsettings.put("MarkerColor", "BLUE");
+                                        aqua_shared_prefs.edit().remove("!dev_" + name + "_settings").apply();
+                                        aqua_shared_prefs.edit().putString("!dev_" + name + "_settings", qsettings.toString()).apply();
+                                        Toast.makeText(getBaseContext(), "Marker color changed to blue", Toast.LENGTH_SHORT).show();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(getBaseContext(), "JSON Exception 108", Toast.LENGTH_SHORT).show();
+                                    }
+                                    break;
+                                case 2:
+                                    try {
+                                        qsettings.remove("MarkerColor");
+                                        qsettings.put("MarkerColor", "GREEN");
+                                        aqua_shared_prefs.edit().remove("!dev_" + name + "_settings").apply();
+                                        aqua_shared_prefs.edit().putString("!dev_" + name + "_settings", qsettings.toString()).apply();
+                                        Toast.makeText(getBaseContext(), "Marker color changed to green", Toast.LENGTH_SHORT).show();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(getBaseContext(), "JSON Exception 108", Toast.LENGTH_SHORT).show();
+                                    }
+                                    break;
+                                case 3:
+                                    try {
+                                        qsettings.remove("MarkerColor");
+                                        qsettings.put("MarkerColor", "ORANGE");
+                                        aqua_shared_prefs.edit().remove("!dev_" + name + "_settings").apply();
+                                        aqua_shared_prefs.edit().putString("!dev_" + name + "_settings", qsettings.toString()).apply();
+                                        Toast.makeText(getBaseContext(), "Marker color changed to orange", Toast.LENGTH_SHORT).show();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(getBaseContext(), "JSON Exception 108", Toast.LENGTH_SHORT).show();
+                                    }
+                                    break;
+                                case 4:
+                                    try {
+                                        qsettings.remove("MarkerColor");
+                                        qsettings.put("MarkerColor", "VIOLET");
+                                        aqua_shared_prefs.edit().remove("!dev_" + name + "_settings").apply();
+                                        aqua_shared_prefs.edit().putString("!dev_" + name + "_settings", qsettings.toString()).apply();
+                                        Toast.makeText(getBaseContext(), "Marker color changed to violet", Toast.LENGTH_SHORT).show();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(getBaseContext(), "JSON Exception 108", Toast.LENGTH_SHORT).show();
+                                    }
+                                    break;
+                                case 5:
+                                    try {
+                                        qsettings.remove("MarkerColor");
+                                        qsettings.put("MarkerColor", "ROSE");
+                                        aqua_shared_prefs.edit().remove("!dev_" + name + "_settings").apply();
+                                        aqua_shared_prefs.edit().putString("!dev_" + name + "_settings", qsettings.toString()).apply();
+                                        Toast.makeText(getBaseContext(), "Marker color changed to rose", Toast.LENGTH_SHORT).show();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(getBaseContext(), "JSON Exception 108", Toast.LENGTH_SHORT).show();
+                                    }
+                                    break;
+                                case 6:
+                                    try {
+                                        qsettings.remove("MarkerColor");
+                                        qsettings.put("MarkerColor", "MAGENTA");
+                                        aqua_shared_prefs.edit().remove("!dev_" + name + "_settings").apply();
+                                        aqua_shared_prefs.edit().putString("!dev_" + name + "_settings", qsettings.toString()).apply();
+                                        Toast.makeText(getBaseContext(), "Marker color changed to magenta", Toast.LENGTH_SHORT).show();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(getBaseContext(), "JSON Exception 108", Toast.LENGTH_SHORT).show();
+                                    }
+                                    break;
+                                case 7:
+                                    try {
+                                        qsettings.remove("MarkerColor");
+                                        qsettings.put("MarkerColor", "AZURE");
+                                        aqua_shared_prefs.edit().remove("!dev_" + name + "_settings").apply();
+                                        aqua_shared_prefs.edit().putString("!dev_" + name + "_settings", qsettings.toString()).apply();
+                                        Toast.makeText(getBaseContext(), "Marker color changed to azure", Toast.LENGTH_SHORT).show();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(getBaseContext(), "JSON Exception 108", Toast.LENGTH_SHORT).show();
+                                    }
+                                    break;
+                            }
                         }
                     }
-                }
 
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
 
-                }
+                    }
 
-            });
+                });
 
 
-        } catch (Exception e) {
-            e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            putCurLoc.setText("<no data>");
         }
     }
 }

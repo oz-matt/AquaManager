@@ -137,7 +137,8 @@ public class GetLocationOnly extends AsyncTask<String, JSONObject, String> {
         StringBuilder result = new StringBuilder();
 
         try {
-            URL url = new URL("http://maps.google.com/maps/api/geocode/json?latlng="+lat+","+lon+"&sensor=true");
+            //URL url = new URL("http://maps.google.com/maps/api/geocode/json?latlng="+lat+","+lon+"&sensor=true");
+            URL url = new URL("https://maps.googleapis.com/maps/api/geocode/json?latlng=" +lat+ "," + lon + "&key=AIzaSyAeHtCDX8llqpxW-xOHZ-nyBPHvKGDeOIw");
             urlConnection = (HttpURLConnection) url.openConnection();
             InputStream in = new BufferedInputStream(urlConnection.getInputStream());
 
@@ -172,7 +173,8 @@ public class GetLocationOnly extends AsyncTask<String, JSONObject, String> {
         StringBuilder result = new StringBuilder();
 
         try {
-            URL url = new URL("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lon + "&result_type=natural_feature&key=AIzaSyB8o5GaUMIgkV4mORr-UdXo7_bVavdm1nE");
+            //URL url = new URL("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lon + "&result_type=natural_feature&key=AIzaSyB8o5GaUMIgkV4mORr-UdXo7_bVavdm1nE");
+            URL url = new URL("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lon + "&result_type=natural_feature&key=AIzaSyAeHtCDX8llqpxW-xOHZ-nyBPHvKGDeOIw");
             urlConnection = (HttpURLConnection) url.openConnection();
             InputStream in = new BufferedInputStream(urlConnection.getInputStream());
 

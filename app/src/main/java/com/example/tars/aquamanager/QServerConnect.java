@@ -128,6 +128,7 @@ public class QServerConnect extends AsyncTask<JSONObject, JSONObject, String[]> 
                     String nums = "<no data>";
                     String latest_time = "<no data>";
                     String second_latest_time = "<no data>";
+                    String prev_time_formatted = "<no data>";
 
                     pct_batt = sensors.getString("pct_battery");
                     temp = sensors.getString("temperature");
@@ -153,16 +154,23 @@ public class QServerConnect extends AsyncTask<JSONObject, JSONObject, String[]> 
                     Double lat = Double.parseDouble(latest_lat);
 
                     JSONObject ret = getLocation(lat, lon);
+                    Log.d("ret!", ret.toString());
                     JSONObject location, location_long;
-                    String location_string = "", location_long_string = "", prev_location_long_string = "<no data>";
+                    String location_string = "<no data>", location_long_string = "<no data>", prev_location_long_string = "<no data>";
+                    String full_settings_str = "<no data>";
 
-                    location = ret.getJSONArray("results").getJSONObject(2);
-                    location_string = location.getString("formatted_address");
+                    JSONArray results_arr = ret.getJSONArray("results");
 
-                    location_long = ret.getJSONArray("results").getJSONObject(0);
-                    location_long_string = location_long.getString("formatted_address");
+                    if (results_arr.length() > 2) {
+                        location = ret.getJSONArray("results").getJSONObject(2);
+                        location_string = location.getString("formatted_address");
 
-                    String prev_time_formatted = "<no data>";
+                        location_long = ret.getJSONArray("results").getJSONObject(0);
+                        location_long_string = location_long.getString("formatted_address");
+
+                        Log.d("test333", "formatted address:" + location_string);
+                        Log.d("test334", "formatted address:" + location_long_string);
+                    }
 
                     if (aqsens_obj.length() > 1) {
                         JSONObject second_latest_element = aqsens_obj.getJSONObject(1);
@@ -174,9 +182,11 @@ public class QServerConnect extends AsyncTask<JSONObject, JSONObject, String[]> 
                         Double prev_lat = Double.parseDouble(second_latest_lat);
 
                         JSONObject retprev = getLocation(prev_lat, prev_lon);
-                        JSONObject prev_location_long = retprev.getJSONArray("results").getJSONObject(0);
-                        prev_location_long_string = prev_location_long.getString("formatted_address");
-
+                        JSONArray retprevarray = retprev.getJSONArray("results");
+                        if (retprevarray.length() > 0) {
+                            JSONObject prev_location_long = retprevarray.getJSONObject(0);
+                            prev_location_long_string = prev_location_long.getString("formatted_address");
+                        }
                         second_latest_time = second_latest_gps_minimum.getString("time").split("\\.")[0] + "Z";
 
                         SimpleDateFormat dfp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
@@ -185,13 +195,9 @@ public class QServerConnect extends AsyncTask<JSONObject, JSONObject, String[]> 
                         Date dateprev = dfp.parse(second_latest_time);
 
                         prev_time_formatted = dateprev.toString();
-
                     }
 
-                    String full_settings_str = location_long_string + "!" + temp + "!" + humidity + "!" + height + "!" + speed + "!" + direction + "!" + nums + "!" + latest_time_formatted + "!" + prev_time_formatted;
-
-                    Log.d("test333", "formatted address:" + location_string);
-                    Log.d("test334", "formatted address:" + location_long_string);
+                    full_settings_str = location_long_string + "!" + temp + "!" + humidity + "!" + height + "!" + speed + "!" + direction + "!" + nums + "!" + latest_time_formatted + "!" + prev_time_formatted;
 
                     String[] retu = {response, location_string, full_settings_str, prev_location_long_string, pct_batt};
 
@@ -209,7 +215,7 @@ public class QServerConnect extends AsyncTask<JSONObject, JSONObject, String[]> 
             e.printStackTrace();
         }
 
-        String[] retu = {"failed", "", "", "", ""};
+        String[] retu = {"failed", "<no data>", "<no data>", "<no data>", "<no data>"};
 
         return retu;
     }
@@ -228,7 +234,8 @@ public class QServerConnect extends AsyncTask<JSONObject, JSONObject, String[]> 
         StringBuilder result = new StringBuilder();
 
         try {
-            URL url = new URL("http://maps.google.com/maps/api/geocode/json?latlng="+lat+","+lon+"&sensor=true");
+            //URL url = new URL("http://maps.google.com/maps/api/geocode/json?latlng="+lat+","+lon+"&sensor=true");
+            URL url = new URL("https://maps.googleapis.com/maps/api/geocode/json?latlng=" +lat+ "," + lon + "&key=AIzaSyAeHtCDX8llqpxW-xOHZ-nyBPHvKGDeOIw");
             urlConnection = (HttpURLConnection) url.openConnection();
             InputStream in = new BufferedInputStream(urlConnection.getInputStream());
 

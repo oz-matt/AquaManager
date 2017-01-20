@@ -83,7 +83,6 @@ public class GeofenceMap extends FragmentActivity implements OnMapReadyCallback,
 
         private static LinearLayout tab_ll;
 
-        private static HttpURLConnection urlConnection;
         private static Activity activity;
 
         public static boolean longClickEnable = false;

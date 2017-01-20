@@ -182,7 +182,8 @@ public class QServerGetAqsens extends AsyncTask<String, String, String> {
         StringBuilder result = new StringBuilder();
 
         try {
-            URL url = new URL("http://maps.google.com/maps/api/geocode/json?latlng="+lat+","+lon+"&sensor=true");
+            //URL url = new URL("http://maps.google.com/maps/api/geocode/json?latlng="+lat+","+lon+"&sensor=true");
+            URL url = new URL("https://maps.googleapis.com/maps/api/geocode/json?latlng=" +lat+ "," + lon + "&key=AIzaSyAeHtCDX8llqpxW-xOHZ-nyBPHvKGDeOIw");
             urlConnection = (HttpURLConnection) url.openConnection();
             InputStream in = new BufferedInputStream(urlConnection.getInputStream());
 

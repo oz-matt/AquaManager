@@ -777,6 +777,9 @@ public class AquaUtil {
         editor.remove("!dev_" + name_to_delete + "_notifs");
         editor.remove("!dev_" + name_to_delete + "_locstr");
         editor.remove("!dev_" + name_to_delete + "_pctbat");
+        editor.remove("!dev_" + name_to_delete + "_prevlocstrlong");
+        editor.remove("!dev_" + name_to_delete + "_fullsettings");
+        editor.remove("!dev_" + name_to_delete + "_settings");
         editor.apply();
     }
 
