@@ -17,6 +17,8 @@ public class HomeGeofences extends Fragment {
 
     public static View view;
 
+    public HomeGeofences(){}
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.activity_home_geofences, container, false);

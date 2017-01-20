@@ -39,6 +39,8 @@ public class GetLocationOnly extends AsyncTask<String, JSONObject, String> {
     private String geodata = "";
     private String area = "";
 
+    public GetLocationOnly(){}
+
     public GetLocationOnly(Activity context) {
         mContext = context;
         mDialog = new ProgressDialog(context);
