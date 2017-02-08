@@ -50,86 +50,175 @@ import java.util.UUID;
 
  Shared Preferences Layout
 
- SharedPreferences "aqua_shared_prefs"
-         iid
-         next_device_id
-         !dev_MyAqua_qdata
-             aquaid
-             aquakey
-             passcode
-             phonenumber
-         !dev_MyAqua_aqsens
-             [
-                0. datetime
-                uuid...
-                1. datetime
-                uuid...
-             ]
-         !dev_MyAqua_notifs
-             [
-                 0. datetime
-                 uuid...
-                 1. datetime
-                 uuid...
-             ]
-        !dev_MyAqua_locstr
-            New Fairfield, CT
-        !dev_MyAqua_locstrlong
-            Musket Ridge Rd, New Fairfield, CT
-        !dev_MyAqua_pctbat
-            85
-        !dev_MyAqua_settings
-            DisplayFlag //Does this module show up with markers when the map button is pressed?
-            MarkerColor
-            MaxMarkersToDisplay
-
-        !dev_MyAqua2_qdata.............
+ Non !dev, !ntf or !geo:
 
 
+ iid: 416706c6-abe3-4d38-9509-1451aaede260 // "Install ID -- randomly generated uuid at the beginning of the install of the app.
+ !set_showLauncher: true // Whether to show the logo screen at the start of the app launch. Edittable in the 'settings' menu
+ !set_showGeos: true // Whether to show the geofences when clicking the 'earth' icon on one of the home screens. Edittable in the 'settings' menu
+ !set_numberOfMarkersToShow: 50 // Maximum number of previous markers to show on the map for a device. This value affects every device that is added to the app. Edittable in the 'settings' menu
+ !set_mapDisplayType: 0 // How the map looks when using a google maps activity (Could be 'terrain', 'normal', 'satellite', or 'hybrid', I think)
+ num_notifs: 2 // Current primary key of the notification most recently added. So when we create a new one, we will increase this value to 3, and populate the !ntf_3_data... sharedpreferences
 
-        **Geofences**
+ !dev_<device name>_... sharedpreferences:
+
+ !dev_myaqua_locstr: Northwest Somerset, ME, USA
+
+ !dev_myaqua_prevlocstrlong: Unnamed Road, West Forks, ME 04985, USA
+
+ !dev_myaqua_fullsettings: Unnamed Road, West Forks, ME 04985, USA!54!10!35.5686!0.00543!354.6796!6!Sun Jan 15 04:27:00 EST 2017!Sun Jan 15 04:27:00 EST 2017 //Some poorly delimited device information, used by the info activity when you tap the cog on a device row.
+
+ !dev_myaqua_settings: {"DisplayFlag":"true","Id":"0","MarkerColor":"RED","MaxMarkersToDisplay":"200"} // Ignore the 'MaxMarkersToDisplay' value -- it is overridden by the !set_numberOfMarkersToShow value.
+
+ !dev_myaqua_qdata: {"aquakey":"84A96238ED36E323","phonenumber":"123 456 7890","pass":"849DEEE3","aquaid":"8DC8B055"} // All stuff given to us by the server when we first add the device (successfully use an 'auth.json' request.)
+
+ !dev_myaqua_pctbat: 85
+
+ !dev_myaqua_aqsens:[  //All the marker data
+     {
+         "datetime":"2017-01-16T04:32:19.872Z",
+         "uuid":"ed3cbe44-866c-49b3-82c3-014ad6ca7b7b",
+         "gpsminimum":{
+         "time":"2017-01-15T09:27:00.280Z",
+         "numsat":6,
+         "lon":-70.242796,
+         "lat":45.378802,
+         "height":35.5686,
+         "gspeed":0.00543,
+         "direction":354.6796
+     },
+        "gpsextended":{
+
+     },
+         "sensors":{
+         "pct_battery":85,
+         "accelerometer":"0,34,5",
+         "temperature":54,
+         "humidity":10,
+         "pressure":5,
+         "update_rate":1
+     },
+         "ble":{
+         "devices_seen":[
+         "AA:BB:CC:DD:EE:FF",
+         "11:22:33:44:55:66",
+         "77:88:99:00:AA:BB",
+         "00:11:22:33:44:55",
+         "AA:BB:CC:DD:EE:EE"
+     ]
+     },
+        "custom":{
+
+     },
+         "incoming_ip":"71.235.242.78",
+         "install_id":"50.176.32.147"
+     },
+     {
+         "datetime":"2017-01-15T08:17:55.352Z",
+         "uuid":"6a5c61e7-4a7a-4ac3-8d87-aaaf087d2b53",
+         "gpsminimum":{
+         "time":"2017-01-15T09:27:00.280Z",
+         "numsat":6,
+         "lon":-70.242796,
+         "lat":45.378802,
+         "height":35.5686,
+         "gspeed":0.00543,
+         "direction":354.6796
+     },
+        "gpsextended":{
+
+     },
+         "sensors":{
+         "pct_battery":85,
+         "accelerometer":"0,34,5",
+         "temperature":54,
+         "humidity":10,
+         "pressure":5,
+         "update_rate":1
+         },
+         "ble":{
+         "devices_seen":[
+         "AA:BB:CC:DD:EE:FF",
+         "11:22:33:44:55:66",
+         "77:88:99:00:AA:BB",
+         "00:11:22:33:44:55",
+         "AA:BB:CC:DD:EE:EE"
+     ]
+     },
+        "custom":{
+
+     },
+         "incoming_ip":"71.235.242.78",
+         "install_id":"50.176.32.147"
+     },
+
+     ...
+
+ ]
 
 
-        !geo_MyGeo_settings -- IF GEOTYPE = CIRCLE
-            location
-            area
-            geotype
-            geodata
-            lat
-            lon
+ !ntf_<primary key>_... sharedpreferences:
 
-         !geo_MyGeo_settings -- IF GEOTYPE = POLYGON
-             location
-             area
-             geotype
-             geodata = JSON Array of JSON Objects
+ !ntf_2_data:{  // This !ntf example is for entering a polygon geofence.
+     "alert":"text",
+     "aquaname":"myaqua",
+     "ntfuuid":"3150c06f",
+     "target":"1234567860",
+     "trigger":"entersGeo",
+     "continuous":"false",
+     "geotype":"polygon",
+     "geodata":[
+     [
+         38.748474963645094,
+         -75.89652758091688
+     ],
+     [
+         38.69654852374553,
+         -75.76101165264845
+     ],
+     [
+         38.69654852374553,
+         -75.57414566724937
+     ],
+     [
+         38.842092374896744,
+         -75.57414566724937
+     ],
+     [
+         38.8892929895514,
+         -75.67351598292589
+     ],
+     [
+         38.91230930364254,
+         -75.87810784578323
+     ],
+     [
+         38.98763622604796,
+         -75.94787763804753
+     ],
+     [
+         38.842092374896744,
+         -75.94787763804753
+     ]
+     ],
+        "geoname":"geo"
+ }
 
-        **Notifications**
+ !ntf_2_uuid: 3150c06f
 
-        !ntf_[num_notifs]_tkey
-            [aquakey]
-        !ntf_[num_notifs]_uuid
-            [uuid]
-        !ntf_[num_notifs]_data
-            alert: text, email
-            aquaname: myaqua
-            ntfuuid: 0e4fhtvnuh-345356-5646-86576-t7vnyfvuh
-            target: +12037701412
-            trigger: entersGeo
-            geotype: polygon
-            geoname: mygeo
-            geodata:
-                [
-                    {
-                        lat: 56.6877667
-                        lon: 123.747676
-                    },
-                    {
-                        lat: 56.6877667
-                        lon: 123.747676
-                    }
-                    ...
-                 ]
+ !ntf_2_tkey: 84A96238ED36E323
+
+ !geo_<geofence name>_... sharedpreferences:
+
+ // Note: this changes based on how the geofence is created -- mainly whether it is a polygon or circle type.
+ !geo_geo_settings:{
+     "location":"Denton, MD 21629, USA",
+     "area":"251",
+     "geotype":"polygon",
+     "geodata":"[[38.748474963645094,-75.89652758091688],[38.69654852374553,-75.76101165264845],[38.69654852374553,-75.57414566724937],[38.842092374896744,-75.57414566724937],[38.8892929895514,-75.67351598292589],[38.91230930364254,-75.87810784578323],[38.98763622604796,-75.94787763804753],[38.842092374896744,-75.94787763804753]]",
+     "lat":"38.82687441002144",
+     "lon":"-75.78165120910853"
+ }
 
 
  *

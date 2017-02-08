@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -141,7 +142,6 @@ public class Main extends AppCompatActivity {
                         HomeDevices.refresh_device_table(context, HomeDevices.view);
 
                         if (checkIfAllGeofencesHaveGoodLocationsAndFixTheOnesThatDont()) {
-
                             Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(context, "Failed to refresh geos", Toast.LENGTH_SHORT).show();
@@ -157,7 +157,6 @@ public class Main extends AppCompatActivity {
             e.printStackTrace();
             Toast.makeText(context, "QServer Error", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     public void onListItemClick(ListView parent, View v, int position, long id){
