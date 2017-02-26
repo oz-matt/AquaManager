@@ -561,26 +561,33 @@ public class MainMap extends FragmentActivity implements OnMapReadyCallback, Goo
 
     private void ZoomToFitMarkers(final Float rad) {
         final View mapView = getSupportFragmentManager().findFragmentById(R.id.map).getView();
-        if (mapView.getViewTreeObserver().isAlive()) {
-            mapView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @SuppressLint("NewApi")
-                @Override
-                public void onGlobalLayout() {
-                    LatLngBounds.Builder bld = new LatLngBounds.Builder();
-                    for (Marker marker : markers) {
-                        bld.include(marker.getPosition());
-                    }
-                    LatLngBounds bounds = bld.build();
+        //if (mapView.getViewTreeObserver().isAlive()) {
+        //    mapView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                //@SuppressLint("NewApi")
+                //@Override
+                //public void onGlobalLayout() {
+                LatLngBounds.Builder bld = new LatLngBounds.Builder();
+                int ctr = 0;
+                for (Marker marker : markers) {
+                    ctr++;
+                    bld.include(marker.getPosition());
+                }
 
+                LatLngBounds bounds;
+
+                if (ctr>0) {
+                    bounds = bld.build();
                     int padding = 200; // offset from edges of the map in pixels
 
                     CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
                     mMap.moveCamera(cu);
-
-                    if (markers.size() == 1) mMap.moveCamera(CameraUpdateFactory.zoomTo(13.5f - (rad * 0.4f)));
                 }
-            });
-        }
+
+                if (markers.size() == 1)
+                    mMap.moveCamera(CameraUpdateFactory.zoomTo(13.5f - (rad * 0.4f)));
+                //}
+            //});
+        //}
     }
 
     private void addSingleDeviceToDevs_To_PopulateList(String name) {

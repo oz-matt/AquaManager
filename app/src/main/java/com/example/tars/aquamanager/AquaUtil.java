@@ -231,7 +231,7 @@ public class AquaUtil {
 
         SharedPreferences aqua_shared_prefs = context.getSharedPreferences("aqua_shared_prefs", context.MODE_PRIVATE);
 
-        //aqua_shared_prefs.edit().clear().apply(); // For Debugging
+        aqua_shared_prefs.edit().clear().apply(); // For Debugging
 
         if (!aqua_shared_prefs.contains("!set_mapDisplayType")) {
             aqua_shared_prefs.edit().putInt("!set_mapDisplayType", 0).apply();
