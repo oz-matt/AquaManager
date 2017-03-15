@@ -1,6 +1,7 @@
 package com.example.tars.aquamanager;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
@@ -74,6 +76,8 @@ public class MainMap extends FragmentActivity implements OnMapReadyCallback, Goo
     private static Resources static_resources;
     private static String pkg_name;
 
+    private ProgressDialog mDialog;
+
     List<Marker> markers = new ArrayList<Marker>();
     Context mContext;
     AlertDialog dialog;
@@ -101,6 +105,13 @@ public class MainMap extends FragmentActivity implements OnMapReadyCallback, Goo
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+        mDialog = new ProgressDialog(this);
+        this.mDialog.setCancelable(false);
+        this.mDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        this.mDialog.show();
+        this.mDialog.setContentView(R.layout.progressdialog);
+        this.mDialog.getWindow().setGravity(Gravity.CENTER);
     }
 
 
@@ -118,6 +129,8 @@ public class MainMap extends FragmentActivity implements OnMapReadyCallback, Goo
         mMap = googleMap;
 
         mMap.setInfoWindowAdapter(this);
+
+        final SharedPreferences aqua_shared_prefs = mContext.getSharedPreferences("aqua_shared_prefs", mContext.MODE_PRIVATE);
 
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
@@ -141,7 +154,53 @@ public class MainMap extends FragmentActivity implements OnMapReadyCallback, Goo
             }
         });
 
-        final SharedPreferences aqua_shared_prefs = this.getSharedPreferences("aqua_shared_prefs", this.MODE_PRIVATE);
+        mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+                mDialog.dismiss();
+                if (getIntent().hasExtra("populate_extra")) {
+                    String populate_extra = getIntent().getStringExtra("populate_extra");
+                    if (populate_extra.equalsIgnoreCase("all")) {
+                        boolean atleastone = false;
+                        if (addAllDevicesWithDisplayFlagToDevs_To_PopulateList() > 0) {
+                            populateMarkersForDevicesInDevs_To_PopulateList();
+                            atleastone = true;
+                        }
+                        if (settingsAllowGeofencesToBeShownOnWorldMap()) {
+                            if (addAllGeofencesToGeos_To_PopulateList() > 0) {
+                                populateMarkersForGeofencesInGeos_To_PopulateList();
+                                atleastone = true;
+                            }
+                        }
+                        if (atleastone) ZoomToFitMarkers(Float.parseFloat("0"));
+                    } else {
+                        String name = populate_extra.substring(5);
+                        addSingleDeviceToDevs_To_PopulateList(name);
+                        populateMarkersForDevicesInDevs_To_PopulateList();
+                        ZoomToFitMarkers(Float.parseFloat("0"));
+                    }
+                } else if (getIntent().hasExtra("populate_single_geo")) {
+                    String geo = getIntent().getStringExtra("populate_single_geo");
+                    try {
+
+                        String this_geos_settings = aqua_shared_prefs.getString("!geo_" + geo + "_settings", "NotFound");
+                        JSONObject settings_obj = new JSONObject(this_geos_settings);
+                        Double rad = (Math.sqrt(Math.sqrt(Double.parseDouble(settings_obj.getString("area"))))) * 2;
+
+                        addSingleGeofenceToGeos_To_PopulateList(geo);
+                        populateMarkersForGeofencesInGeos_To_PopulateList();
+                        ZoomToFitMarkers(rad.floatValue());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(getBaseContext(), "Geo Parse Failure", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(getBaseContext(), "No devices to populate", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        //final SharedPreferences aqua_shared_prefs = getBaseContext().getSharedPreferences("aqua_shared_prefs", this.MODE_PRIVATE);
 
         int terrain_type = aqua_shared_prefs.getInt("!set_mapDisplayType", 0);
 
@@ -160,46 +219,6 @@ public class MainMap extends FragmentActivity implements OnMapReadyCallback, Goo
         final RelativeLayout zoom_in_rl = (RelativeLayout) findViewById(R.id.zoomin_rl);
         final RelativeLayout zoom_out_rl = (RelativeLayout) findViewById(R.id.zoomout_rl);
         final RelativeLayout adddev_rl = (RelativeLayout) findViewById(R.id.add_dev_rl);
-
-        if (getIntent().hasExtra("populate_extra")) {
-            String populate_extra = getIntent().getStringExtra("populate_extra");
-            if (populate_extra.equalsIgnoreCase("all")) {
-                boolean atleastone = false;
-                if (addAllDevicesWithDisplayFlagToDevs_To_PopulateList() > 0) {
-                    populateMarkersForDevicesInDevs_To_PopulateList();
-                    atleastone = true;
-                }
-                if (settingsAllowGeofencesToBeShownOnWorldMap()) {
-                    if (addAllGeofencesToGeos_To_PopulateList() > 0) {
-                        populateMarkersForGeofencesInGeos_To_PopulateList();
-                        atleastone = true;
-                    }
-                }
-                if (atleastone) ZoomToFitMarkers(Float.parseFloat("0"));
-            } else {
-                String name = populate_extra.substring(5);
-                addSingleDeviceToDevs_To_PopulateList(name);
-                populateMarkersForDevicesInDevs_To_PopulateList();
-                ZoomToFitMarkers(Float.parseFloat("0"));
-            }
-        } else if (getIntent().hasExtra("populate_single_geo")) {
-            String geo = getIntent().getStringExtra("populate_single_geo");
-            try {
-
-                String this_geos_settings = aqua_shared_prefs.getString("!geo_" + geo + "_settings", "NotFound");
-                JSONObject settings_obj = new JSONObject(this_geos_settings);
-                Double rad = (Math.sqrt(Math.sqrt(Double.parseDouble(settings_obj.getString("area")))))*2;
-
-                addSingleGeofenceToGeos_To_PopulateList(geo);
-                populateMarkersForGeofencesInGeos_To_PopulateList();
-                ZoomToFitMarkers(rad.floatValue());
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(this, "Geo Parse Failure", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            Toast.makeText(this, "No devices to populate", Toast.LENGTH_SHORT).show();
-        }
 
         zoom_in.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -235,7 +254,6 @@ public class MainMap extends FragmentActivity implements OnMapReadyCallback, Goo
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     adddev_rl.setBackgroundResource(R.color.whiteTransparent);
 
-                    final SharedPreferences aqua_shared_prefs = mContext.getSharedPreferences("aqua_shared_prefs", mContext.MODE_PRIVATE);
                     java.util.Map<String, ?> keys = aqua_shared_prefs.getAll();
 
                     final List<String> temp_array_of_devs = new ArrayList<>();
