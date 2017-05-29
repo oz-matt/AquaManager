@@ -23,6 +23,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
 
+import javax.net.ssl.HttpsURLConnection;
+
 public class QServerGetAqsens extends AsyncTask<String, String, String> {
     private Activity mContext;
     private ProgressDialog mDialog;
@@ -86,8 +88,8 @@ public class QServerGetAqsens extends AsyncTask<String, String, String> {
 
                     Log.d("outgoing json", outgoing_json.toString());
 
-                    URL url = new URL("http://198.61.169.55:8081");
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    URL url = new URL("https://data.aquaiot.com");
+                    HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
                     conn.setReadTimeout(10000);
                     conn.setConnectTimeout(15000);
                     conn.setRequestMethod("POST");

@@ -67,8 +67,8 @@ public class QServerConnect extends AsyncTask<JSONObject, JSONObject, String[]> 
 
             JSONObject msg = outgoing_json[0];
 
-            URL url = new URL("http://198.61.169.55:8081");
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            URL url = new URL("https://data.aquaiot.com");
+            HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
             conn.setReadTimeout(10000);
             conn.setConnectTimeout(15000);
             conn.setRequestMethod("POST");
